@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Orba Virtual Piano</title>
+	<style type="text/css">
+	* {
+	  box-sizing:border-box
+	}
+	h1 {
+		font-family: "Open Sans", sans-serif;
+		font-size: 4vw;
+		font-weight: 400;
+		color: #c1c4e1;
+		line-height: 1.0;
+		margin-top: 20px;
+		justify-content: center;
+    	text-align:center;
+	}
+
+	html {
+		height: 100%;
+	}
+
+	body {
+	  margin:0;
+	  height: 100%;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+	  background: linear-gradient(0deg, rgba(19,19,84,1) 0%, rgba(2,0,36,1) 100%);
+	  font-size: xx-small;
+	  overflow: hidden; /* Hide scrollbars */
+	}
+
+	ul {
+	  font-size:0.5vw;
+	  height:10vw;
+	  width:fit-content;
+	  margin:5em auto;
+	  padding:3em 3em 0 3em;
+	  position:relative;
+	  border:1px solid #160801;
+	  border-radius:1em;
+	  background:linear-gradient(to bottom right,rgba(200,200,200,1),rgba(150,150,150,1) 100%);
+	  box-shadow:0 0 50px rgba(0,0,0,0.5) inset,0 1px rgba(212,152,125,0.2) inset,0 5px 15px rgba(0,0,0,0.5)
+	}
+
+	li {
+	  margin:0;
+	  padding:0;
+	  list-style:none;
+	  position:relative;
+	  float:left
+	}
+
+	.white {
+	  height:16em;
+	  width:4em;
+	  z-index:1;
+	  border-left:1px solid #bbb;
+	  border-bottom:1px solid #bbb;
+	  border-radius:0 0 5px 5px;
+	  box-shadow:-1px 0 0 rgba(255,255,255,0.8) inset,0 0 5px #ccc inset,0 0 3px rgba(0,0,0,0.2);
+	  background:linear-gradient(to bottom,#eee 0%,#fff 100%)
+	}
+
+	.whiteSelected {
+	  pointer-events: none;
+	  height:16em;
+	  width:4em;
+	  z-index:1;
+	  border-top:1px solid #777;
+	  border-left:1px solid #999;
+	  border-bottom:1px solid #999;
+	  border-radius:0 0 5px 5px;
+	  box-shadow:2px 0 3px rgba(0,0,0,0.1) inset,-5px 5px 20px rgba(0,0,0,0.2) inset,0 0 3px rgba(0,0,0,0.2);
+	  background:linear-gradient(to bottom,#0f0 0%,#00e900 100%)
+	}
+
+	.white:active {
+	  border-top:1px solid #777;
+	  border-left:1px solid #999;
+	  border-bottom:1px solid #999;
+	  box-shadow:2px 0 3px rgba(0,0,0,0.1) inset,-5px 5px 20px rgba(0,0,0,0.2) inset,0 0 3px rgba(0,0,0,0.2);
+	  background:linear-gradient(to bottom,#fff 0%,#e9e9e9 100%)
+	}
+
+	.black {
+	  height:8em;
+	  width:2em;
+	  margin:0 0 0 -1em;
+	  z-index:2;
+	  border:1px solid #000;
+	  border-radius:0 0 3px 3px;
+	  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -5px 2px 3px rgba(0,0,0,0.6) inset,0 2px 4px rgba(0,0,0,0.5);
+	  background:linear-gradient(45deg,#222 0%,#555 100%)
+	}
+
+	.blackSelected {
+	  pointer-events: none;
+	  height:8em;
+	  width:2em;
+	  margin:0 0 0 -1em;
+	  z-index:2;
+	  border:1px solid #000;
+	  border-radius:0 0 3px 3px;
+	  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
+	  background:linear-gradient(to right,#0F0 0%,#0D0 100%)
+	}
+
+	.black:active {
+	  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
+	  background:linear-gradient(to right,#444 0%,#222 100%)
+	}
+
+	.midi {
+		color: #8184a1;
+	}
+
+	.drum {
+		color: rgb(50, 225, 115);
+	}
+	.bass {
+		color: rgb(84, 191, 247);
+	}
+	.chord {
+		color: rgb(254, 138, 12);
+	}
+	.lead {
+		color: rgb(240, 100, 248);
+	}
+
+	ul .a,.g,.b,.d,.e {
+	  margin:0 0 0 -1em
+	}
+
+	ul li:first-child {
+	  border-radius:5px 0 5px 5px
+	}
+
+	ul li:last-child {
+	  border-radius:0 5px 5px 5px
+	}
+	@media screen and (min-width: 0px) and (max-width: 800px) {
+	  li.octave1, li.octave2, li.octave5, li.octave6  { display: none;}
+	  li { font-size:1.5vw; }
+	  ul { height:26vw; }
+	}
+
+	@media screen and (min-width: 801px) and (max-width: 1024px) {
+	  li.octave1, li.octave6 { display: none;}
+	  li { font-size:0.85vw; }
+	  ul { height:16vw; }
+	}
+	</style>
+</head>
+<body>
+	<h1>Orba <span class="midi">Virtual</span> Piano: <span id="voice" class="drum">Drum</span></h1>
+
+	<ul class="set">
+		<li id="24" class="octave1 white c"></li>
+		<li id="25" class="octave1 black cs"></li>
+		<li id="26" class="octave1 white d"></li>
+		<li id="27" class="octave1 black ds"></li>
+		<li id="28" class="octave1 white e"></li>
+		<li id="29" class="octave1 white f"></li>
+		<li id="30" class="octave1 black fs"></li>
+		<li id="31" class="octave1 white g"></li>
+		<li id="32" class="octave1 black gs"></li>
+		<li id="33" class="octave1 white a"></li>
+		<li id="34" class="octave1 black as"></li>
+		<li id="35" class="octave1 white b"></li>
+		<li id="36" class="octave2 white c"></li>
+		<li id="37" class="octave2 black cs"></li>
+		<li id="38" class="octave2 white d"></li>
+		<li id="39" class="octave2 black ds"></li>
+		<li id="40" class="octave2 white e"></li>
+		<li id="41" class="octave2 white f"></li>
+		<li id="42" class="octave2 black fs"></li>
+		<li id="43" class="octave2 white g"></li>
+		<li id="44" class="octave2 black gs"></li>
+		<li id="45" class="octave2 white a"></li>
+		<li id="46" class="octave2 black as"></li>
+		<li id="47" class="octave2 white b"></li>
+		<li id="48" class="octave3 white c"></li>
+		<li id="49" class="octave3 black cs"></li>
+		<li id="50" class="octave3 white d"></li>
+		<li id="51" class="octave3 black ds"></li>
+		<li id="52" class="octave3 white e"></li>
+		<li id="53" class="octave3 white f"></li>
+		<li id="54" class="octave3 black fs"></li>
+		<li id="55" class="octave3 white g"></li>
+		<li id="56" class="octave3 black gs"></li>
+		<li id="57" class="octave3 white a"></li>
+		<li id="58" class="octave3 black as"></li>
+		<li id="59" class="octave3 white b"></li>
+		<li id="60" class="octave4 white c"></li>
+		<li id="61" class="octave4 black cs"></li>
+		<li id="62" class="octave4 white d"></li>
+		<li id="63" class="octave4 black ds"></li>
+		<li id="64" class="octave4 white e"></li>
+		<li id="65" class="octave4 white f"></li>
+		<li id="66" class="octave4 black fs"></li>
+		<li id="67" class="octave4 white g"></li>
+		<li id="68" class="octave4 black gs"></li>
+		<li id="69" class="octave4 white a"></li>
+		<li id="70" class="octave4 black as"></li>
+		<li id="71" class="octave4 white b"></li>
+		<li id="72" class="octave5 white c"></li>
+		<li id="73" class="octave5 black cs"></li>
+		<li id="74" class="octave5 white d"></li>
+		<li id="75" class="octave5 black ds"></li>
+		<li id="76" class="octave5 white e"></li>
+		<li id="77" class="octave5 white f"></li>
+		<li id="78" class="octave5 black fs"></li>
+		<li id="79" class="octave5 white g"></li>
+		<li id="80" class="octave5 black gs"></li>
+		<li id="81" class="octave5 white a"></li>
+		<li id="82" class="octave5 black as"></li>
+		<li id="83" class="octave5 white b"></li>
+		<li id="84" class="octave6 white c"></li>
+		<li id="85" class="octave6 black cs"></li>
+		<li id="86" class="octave6 white d"></li>
+		<li id="87" class="octave6 black ds"></li>
+		<li id="88" class="octave6 white e"></li>
+		<li id="89" class="octave6 white f"></li>
+		<li id="90" class="octave6 black fs"></li>
+		<li id="91" class="octave6 white g"></li>
+		<li id="92" class="octave6 black gs"></li>
+		<li id="93" class="octave6 white a"></li>
+		<li id="94" class="octave6 black as"></li>
+		<li id="95" class="octave6 white b"></li>
+		<li id="96" class="octave6 white c"></li>
+	</ul>
+	<script type="text/javascript">
+		var midiAccessGlobal;
+
+		// Request MIDI access
+		if (navigator.requestMIDIAccess) {
+		    console.log('This browser supports WebMIDI!');
+
+		    navigator.requestMIDIAccess({sysex:true}).then(onMIDISuccess, onMIDIFailure);
+
+		} else {
+		    console.log('WebMIDI is not supported in this browser.');
+		}
+
+		// Function to run when requestMIDIAccess is successful
+		function onMIDISuccess(midiAccess) {
+			midiAccessGlobal = midiAccess;
+		    var inputs = midiAccess.inputs;
+		    var outputs = midiAccess.outputs;
+
+		    // Attach MIDI event "listeners" to each input
+		    for (var input of midiAccess.inputs.values()) {
+		        input.onmidimessage = getMIDIMessage;
+		    }
+
+		    //DEBUG with this if there are More Midi devices in the future
+		    // for (var output of midiAccess.outputs.values()) {
+		    //     console.log(output);
+		    // }
+		}
+
+		// Function to run when requestMIDIAccess fails
+		function onMIDIFailure() {
+		    console.log('Error: Could not access MIDI devices.');
+		    alert("Error: Could not access MIDI devices.");
+		}
+
+		// Function to parse the MIDI messages we receive
+		// For this app, we're only concerned with the actual note value,
+		// but we can parse for other information, as well
+		function getMIDIMessage(message) {
+			var midiChannels = {0:"Lead",8:"Bass",9:"Drum",15:"Chord"};
+			var voices = ["Drum", "Bass", "Chord", "Lead"];
+			var voice = document.getElementById('voice');
+		    var command = message.data[0];
+		    var note = message.data[1];
+		    var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
+
+		    //console.log(command, note );
+
+		    switch (command) {
+		        case 153: //DrumOn
+		        case 152: //BassOn
+		        case 159: //ChordOn
+		        case 144: //144 LeadOn
+		             voice.textContent = midiChannels[parseInt(command)&15];
+		             voice.className = midiChannels[parseInt(command)&15].toLowerCase();
+		             noteOn(note);
+		             break;
+		        case 137: //DrumOff
+		        case 136: //BassOff
+		        case 143: //ChordOff
+		        case 128: //LeadOff 
+		             noteOff(note);
+		             break;
+		        case 200: //Voice Change
+		        	 voice.textContent = voices[note];
+		        	 voice.className = voices[note].toLowerCase();
+	        	 	 break;
+        	 	case 176: //Controller Message (with value 123) sent after Orba App Uploads Preset Voice to Orba
+        	 		 // console.log('Patch Loaded'); 
+        	 		 // window.focus();
+		    }
+		}
+		
+      	function sendMidiNoteOn(pitch, velocity) {
+	         const NOTE_ON = 0x90;
+	         const device = midiAccessGlobal.outputs.values().next().value;
+	         const msgOn = [NOTE_ON, pitch, velocity];
+	         device.send(msgOn);
+      	}
+      	function sendMidiNoteOff(pitch, velocity) {
+	         const NOTE_OFF = 0x80;
+	         const device = midiAccessGlobal.outputs.values().next().value;
+	         const msgOff = [NOTE_OFF, pitch, velocity];
+	         device.send(msgOff);
+      	}
+
+		// Function to handle noteOn messages (ie. key is pressed)
+		// Think of this like an 'onkeydown' event
+		function noteOn(note) {
+		    //console.log("On: " + note);
+			var kbn = document.getElementById(note);
+
+			if (kbn) {
+				if (kbn.classList.contains('white')) {
+					kbn.classList.add('whiteSelected');
+				} else {
+					kbn.classList.add('blackSelected');
+				}
+				
+			}
+		}
+
+		// Function to handle noteOff messages (ie. key is released)
+		// Think of this like an 'onkeyup' event
+		function noteOff(note) {
+		    //console.log("Off: " + note);
+		    var kbn = document.getElementById(note);
+
+			if (kbn) {
+				if (kbn.classList.contains('white')) {
+					kbn.classList.remove('whiteSelected');
+				} else {
+					kbn.classList.remove('blackSelected');
+				}
+				
+			}
+		}
+
+		// Bind each key to a Click event
+		const pianoKeys = document.querySelectorAll("li");
+		  	pianoKeys.forEach(pianoKey => {
+			  pianoKey.addEventListener('mousedown', (e) => {
+			    sendMidiNoteOn(e.target.id,100);
+			  });
+			});
+			pianoKeys.forEach(pianoKey => {
+			  pianoKey.addEventListener('mouseup', (e) => {
+			    sendMidiNoteOff(e.target.id,100);
+			  });
+			});
+	</script>
+</body>
+</html>

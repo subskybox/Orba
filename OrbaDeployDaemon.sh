@@ -2,7 +2,7 @@
 ## Script to update Disentangle.orbapreset with a new ModifierData string
 ## from the clipboard. It then renames the file to force the Orba App to update.
 ## Copyright (C) 2022 subskybox@gmail.com - All Rights Reserved
-## Last revised 05/15/202
+## Last revised 06/01/2022
 ##
 ## USAGE: ./OrbaDeployDaemon.sh
 ##
@@ -33,7 +33,7 @@ while :; do
 		# If the clipboard contains a new modifierData string
 		# Replace the old modifierData string with the new one (from the clipboard)
 		if [ ${#modifierData} -eq 236 ]; then
-			perl -pi -w -e '!$x && s/"(?<=modifierData=")[^"]*/"'$modifierData'/ && ($x=1)' Disentangle.orbapreset
+			perl -pi -w -e '!$x && s{modifierData="[^"]*}{modifierData="'$modifierData'} && ($x=1)' Disentangle.orbapreset
 		fi
 
 		# Rename Disentangle.orbapreset twice to force the Orba App to pickup the change

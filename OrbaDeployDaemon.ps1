@@ -1,7 +1,7 @@
 ## Script to update Disentangle.orbapreset with a new ModifierData string
 ## from the clipboard. It then renames the file to force the Orba App to update.
 ## Copyright (C) 2022 subskybox@gmail.com - All Rights Reserved
-## Last revised 05/23/2022
+## Last revised 06/02/2022
 ##
 ## USAGE: ./OrbaDeployDaemon.ps1
 ##
@@ -30,7 +30,7 @@ for (;;)
 	Start-Sleep -Seconds 1
 	$modifierData=Get-Clipboard
 
-    if ( $modifierData.StartsWith("DEPLOY") -And ($modifierData.length -eq 242) ) {
+    if ( $modifierData -ne $null -And $modifierData.StartsWith("DEPLOY") -And ($modifierData.length -eq 242) ) {
         Write-Host "Deploying..."
 
         # Trim the token from the clipboard to prevent redeployment

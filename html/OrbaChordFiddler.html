@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
+	<meta charset="UTF-8">
+	<meta http-equiv="cache-control" content="public">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Orba Chord Fiddler</title>
 	<style type="text/css">
@@ -31,32 +32,9 @@
 			border: 1px solid;
 			border-collapse: collapse;
 			padding: 10px;
-			/* width: 80%; */
-		}
-		td:nth-child(6), td:nth-child(7) {
-    		font-family: "Courier";
-		}
-		td:nth-child(7) {
-    		cursor: pointer;
-    		-webkit-user-select: none; /* Safari */        
-			-moz-user-select: none; /* Firefox */
-			-ms-user-select: none; /* IE10+/Edge */
-			user-select: none; /* Standard */
-		}
-		td:nth-child(8) {
-			display: flex;
     		justify-content: center;
     		text-align:center;
 		}
-		/* 
-		tr:nth-child(2),tr:nth-child(3),tr:nth-child(4),tr:nth-child(5),tr:nth-child(6),
-		tr:nth-child(12),tr:nth-child(13),tr:nth-child(14),tr:nth-child(15),tr:nth-child(16),tr:nth-child(17),
-		tr:nth-child(23),tr:nth-child(24),tr:nth-child(25),tr:nth-child(26),tr:nth-child(27),
-		tr:nth-child(34),tr:nth-child(35),tr:nth-child(36),tr:nth-child(37),tr:nth-child(38)
-		{
-    	  		background-color: #222;
-		}
-		*/
 		tbody:nth-child(odd) {
     	  		background-color: #222;
 		}
@@ -67,6 +45,8 @@
 		  position: relative;
 		  border-radius: 3px;
 		  margin-top: 0px;
+		  margin-left: 2px;
+		  margin-right: 2px;
 		  padding: 8px 20px;
 		  border: 0;
 		  font-size: 0.835em;
@@ -102,7 +82,6 @@
 		.container {
 		  display: flex;
 		  width: 100%;
-		  /* height: 30vh; */
 		  flex-direction: column;
 		  justify-content: center;
 		  align-items: center;
@@ -136,6 +115,20 @@
 		  margin-top: 30px;
 		  line-height: 1.2;
 		}
+		.column {
+		  float: left;
+		  width: 50%;
+		}
+		.instructions {
+		  text-indent: -3.4em;
+		  padding-left: 3.4em;
+		  padding-top: 5px;
+		  width: 70ch;
+		  height: 3ch;
+		  padding-left: 100px;
+    	  margin-top: 10px;
+		  line-height: 1.2;
+		}
 		.majorChord {
 		  background: #1DAFE7;
 		  color: #fff;
@@ -149,61 +142,12 @@
 		  border-radius: 3px;
 		}
 		.modifierData {
+		  margin-bottom: 40px;
 		  font-family: "Courier";
 		  width: 82ch;
 		  height: 3ch;
 		  word-break: break-all;
 		  border: 1px solid;
-		  margin-bottom: 50px;
-		}
-		.overlay {
-		  position: fixed;
-		  top: 0;
-		  bottom: 0;
-		  left: 0;
-		  right: 0;
-		  background: rgba(0, 0, 0, 0.7);
-		  visibility: hidden;
-		  opacity: 0;
-		}
-		.overlay:target {
-		  visibility: visible;
-		  opacity: 1;
-		}
-		.overlay2 {
-		  -webkit-animation: fade 0.5s ease;
-    	  animation: fade 0.5s ease;
-		  visibility: visible;
-		  opacity: 1;
-		}
-		.popup {
-		  margin: 130px auto;
-		  padding: 20px;
-		  background: #fff;
-		  border-radius: 5px;
-		  width: 50%;
-		  min-width: 500px;
-		  position: relative;
-		  transition: all 5s ease-in-out;
-		}
-
-		.popup h2 {
-		  margin-top: 0;
-		  color: #333;
-		  font-family: Tahoma, Arial, sans-serif;
-		}
-		.popup .close {
-		  position: absolute;
-		  top: 20px;
-		  right: 30px;
-		  transition: all 200ms;
-		  font-size: 30px;
-		  font-weight: bold;
-		  text-decoration: none;
-		  color: #333;
-		}
-		.popup .close:hover {
-		  color: #06D85F;
 		}
 		.quantity {
 		  display: flex;
@@ -254,26 +198,26 @@
 		.quantity__plus:visited {
 		  color: #fff;
 		}
-		.valueTable {
-		  margin-top: 50px;
+		.row {
+		  margin-left:-5px;
+		  margin-right:-5px;
+		}
+		.row::after {
+		  content: "";
+		  clear: both;
+		  display: table;
+		}
+		.spacer {
+		  margin-top:325px;
 		}
 		.tightCaption {
 		  margin-bottom: 10px;
 		}
-		@-webkit-keyframes fade{
-		    0%   {visibility: hidden;  opacity:0;}
-		    1%   {visibility: visible; opacity:0;}
-		    100% {visibility: visible; opacity:1;}
+		.valueTable {
+		  margin: 50px;
 		}
-		@-keyframes fade{
-		    0%   {visibility: hidden;   opacity:0;}
-		    1%   {visibility: visible; opacity:0;}
-		    100% {visibility: visible; opacity:1;}
-		}
-		@media screen and (max-width: 700px){
-		  .popup{
-		    width: 50%;
-		  }
+		#chordDataMajor {
+			float: right;
 		}
 	</style>
 </head>
@@ -290,1503 +234,167 @@
 	  	<button id="copy" type="button">Copy to clipboard<span class="done" aria-hidden="true">Copied</span></button>
 	  	<button id="deploy" type="button">Deploy<span class="done" aria-hidden="true">Deploying</span></button>
   	</div>
+  	<div class="instructions">
+  	<b>NOTE:</b> Each pad plays a 4 voice chord as defined by the offsets below. Each value controls the note offset in semitones from that chord's corresponding root note.
+  	</div>
 </div>
-<div style="margin-top:325px;" class="container">
-
-<table id="chordDataMajor" class="valueTable" summary="This table shows the ModifierData character info with known information about each.">
-	<caption><span class="majorChord tableCaption">Major Key</span></caption>
-	<tr>
-	   <th>Pad/Chord</th>
-	   <th>Index</th>
-	   <th>Original Chr.</th>
-	   <th>Offset</th>
-	   <th>New Chr.</th>
-	   <th>Original Binary</th>
-	   <th>New Binary</th>
-	   <th>Behavior</th>
-	</tr>
-	<tbody>
-	<tr>
-	   <td rowspan="5">1 / I</td>
-	   <td>67</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>68</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>69</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>70</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>71</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">2 / II</td>
-	   <td>72</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>73</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>74</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>75</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>76</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="6">3 / III</td>
-	   <td>77</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>78</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>79</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>80</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>81</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>82</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">4 / IV</td></td>
-	   <td>83</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>84</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>85</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>86</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>87</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">5 / V</td>
-	   <td>88</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>89</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>90</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>91</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>92</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="6">6 / VI</td>
-	   <td>93</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>94</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>95</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>96</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>97</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>98</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">7 / VII</td>
-	   <td>99</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>100</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>101</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>102</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>103</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">8 / VIII</td>
-	   <td>104</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>105</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>106</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>107</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>108</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-</table>
-<table id="chordDataMinor" class="valueTable" summary="This table shows the ModifierData character info with known information about each.">
-	<caption><span class="minorChord tableCaption">Minor Key</span></caption>
-	<tr>
-	   <th>Pad/Chord</th>
-	   <th>Index</th>
-	   <th>Original Chr.</th>
-	   <th>Offset</th>
-	   <th>New Chr.</th>
-	   <th>Original Binary</th>
-	   <th>New Binary</th>
-	   <th>Behavior</th>
-	</tr>
-	<tbody>
-	<tr>
-	   <td rowspan="6">1 / I</td>
-	   <td>109</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>110</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>111</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>112</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>113</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>114</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">2 / II</td>
-	   <td>115</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>116</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>117</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>118</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>119</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">3 / III</td>
-	   <td>120</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>121</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>122</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>123</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>124</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="6">4 / IV</td>
-	   <td>125</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>126</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>127</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>128</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>129</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>130</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">5 / V</td>
-	   <td>131</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>132</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>133</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>134</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>135</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">6 / VI</td>
-	   <td>136</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>137</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>138</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>139</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>140</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="6">7 / VII</td>
-	   <td>141</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>142</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>143</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>144</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>145</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>	
-	   <td>146</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-	<tbody>
-	<tr>
-	   <td rowspan="5">8 / VIII</td>
-	   <td>147</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>148</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>149</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>150</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	<tr>
-	   <td style="display:none"></td>
-	   <td>151</td>
-	   <td></td>
-	   <td>
-	   	<div class="quantity">
-		    <a href="#" class="quantity__minus"><span>-</span></a>
-		    <input name="quantity" type="text" class="quantity__input" value="0">
-		    <a href="#" class="quantity__plus"><span>+</span></a>
-		</div>
-	   </td>
-	   <td></td>
-	   <td></td>
-	   <td></td>
-	   <td><a class="button" href="#popup1">View</a></td>
-	</tr>
-	</tbody>
-</table>
-</div>
-<div id="popup1" class="overlay">
-	<div class="popup">
-		<h2></h2>
-		<a class="close" href="">&times;</a>
-		<div class="content"></div>
+<div class="spacer">
+	<div class="row">
+	  <div class="column">
+		<table id="chordDataMajor" class="valueTable">
+			<caption><span class="majorChord tableCaption">Major Key</span></caption>
+			<tr>
+			   <th>Pad/Chord</th>
+			   <th>Data Index</th>
+			   <th>Root Note Offset</th>
+			</tr>
+			<tbody>
+				<tr>
+				   <td rowspan="4">1</td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>	
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+			</tbody>
+		</table>
+	  </div>
+	  <div class="column">
+		<table id="chordDataMinor" class="valueTable">
+			<caption><span class="minorChord tableCaption">Minor Key</span></caption>
+			<tr>
+			   <th>Pad/Chord</th>
+			   <th>Data Index</th>
+			   <th>Root Note Offset</th>
+			</tr>
+			<tbody>
+				<tr>
+				   <td rowspan="4">1</td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>	
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+			</tbody>
+		</table>
+	  </div>
 	</div>
 </div>
 <script type="text/javascript">
 
+	// Load standard chord voicings
 	var modifierData="AgAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQgAAAAEAAAAAAAAAAABAAEAIAAAAAAABwwQAAcMDwAHDA8ABAcQAAQHDAADBwwAAwz8AAQM+wADBwAAAwgAAAQHAAADBwAAAwcAAAQHAAAEBwAAAwcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+	var modifierDataArr = fromBase64(modifierData).map(x => x << 24 >> 24);
 
 	// Add modifierData string and highlight segments of interest
 	var modifierDataNode = document.querySelectorAll("#originalModifierData")[0];
-	modifierDataNode.innerHTML = modifierData;
+	modifierDataNode.textContent = modifierData;
 	highlightSegments(modifierDataNode);
 
-	// Populate cells based on the character indexes
-  	var letters = document.querySelectorAll(('.valueTable tr td:first-child'));
-  	letters.forEach(node => {
-  		var index = parseInt(node.nextElementSibling.innerHTML);
-  		var secondSibling = node.nextElementSibling.nextElementSibling;
-  		secondSibling.innerHTML = modifierData.slice(index,index+1);
-  		var fourthSibling = secondSibling.nextElementSibling.nextElementSibling;
-  		fourthSibling.innerHTML = secondSibling.innerHTML;
-  		//var binaryStr = getBinaryString(secondSibling.innerHTML.charCodeAt(0));
-  		//fourthSibling.nextElementSibling.innerHTML = binaryStr;
+	// Grab references to the important elements
+	var majorTable = document.getElementById("chordDataMajor");
+	var minorTable = document.getElementById("chordDataMinor");
+	var padVoiceNode = majorTable.children[2];
 
-  		var newBinary = fourthSibling.nextElementSibling.nextElementSibling;
-		newBinary.innerHTML = getBinaryString(secondSibling.innerHTML.charCodeAt(0), "HTML");
-		fourthSibling.nextElementSibling.textContent = newBinary.textContent;
+	// Loop to add the Pad Voice structure/node dynamically
+	for (let i = 0; i < 7; i++) {
+  		let pvn = padVoiceNode.cloneNode(true);
+  		pvn.querySelectorAll(('tr td:first-child'))[0].textContent = i + 2;
+		majorTable.appendChild(pvn);
+		minorTable.appendChild(pvn.cloneNode(true));
+	}
 
-		newBinary.addEventListener('click', function(e) {
-			if (e.target.textContent.length == 1) {
-				e.target.textContent = (!parseInt(e.target.textContent)) ? 1 : 0 ;
-				reportNewBinary(e.target.parentNode);
-			}
-		}, false);
+	// Dynamically add the ModifierDataArr indexes
+	var indexNodes = document.querySelectorAll(('.valueTable tr td:first-child'));
+  	indexNodes.forEach((node, i) => {
+  		let index = 50 + i
+  		node.nextElementSibling.textContent = index;
+  		node.nextElementSibling.nextElementSibling.getElementsByTagName('input')[0].value = modifierDataArr[index];
+	});
 
-  	});
+  	function toBase64(u8) {
+    	return btoa(String.fromCharCode.apply(null, u8));
+	}
 
-  	function getBinaryString(val, outputType) {
+	function fromBase64(str) {
+	    return atob(str).split('').map(function (c) { return c.charCodeAt(0); });
+	}
 
-  		var binaryStr = val.toString(2);
-		binaryStr = "00000000".substr(binaryStr.length) + binaryStr;
-
-		if (outputType == "HTML") {
-			var binaryNode = document.createElement("td");
-			for(var i = 0, l = binaryStr.length; i < l; i++) {
-			    var span = document.createElement('span');
-			    span.textContent = binaryStr.charAt(i);
-			    binaryNode.appendChild(span);
-			}
-			return binaryNode.innerHTML;
-		}
-		else {
-			return binaryStr;
-		}
-  		
-  	}
-
-	document.onkeydown = function(evt) {
-	    evt = evt || window.event;
-	    var isEscape = false;
-	    if ("key" in evt) {
-	        isEscape = (evt.key === "Escape" || evt.key === "Esc");
-	    } else {
-	        isEscape = (evt.keyCode === 27);
-	    }
-	    if (isEscape) {
-	        var popup = document.querySelectorAll("#popup1")[0];
-			popup.classList.remove('overlay2');
-	    }
-	};
-
-  	// Allow Copy via interface button
+  	// Grab references to the buttons
     var btnCopy = document.getElementById( 'copy' );
     var btnDeploy = document.getElementById( 'deploy' );
  
@@ -1825,7 +433,6 @@
   	  toCopy.value = "DEPLOY" + document.getElementById( 'originalModifierData' ).textContent;
   	  document.body.appendChild(toCopy);
       toCopy.select();
-  	  console.log(toCopy.textContent);
 		try {
 		   var successful = document.execCommand('copy');
 		  if(successful) {
@@ -1849,20 +456,13 @@
 	  return false;
 	} );
 
-	const closeButton  = document.getElementsByClassName('close')[0];
-		closeButton.addEventListener('click', (e) => {
-			e.preventDefault();
-			var popup = document.querySelectorAll("#popup1")[0];
-			popup.classList.remove('overlay2');
-		});
-
   	const minusButtons = document.querySelectorAll(".quantity__minus");
   	minusButtons.forEach(minus => {
 	  minus.addEventListener('click', (e) => {
 	    e.preventDefault();
 	    var counter = e.currentTarget.parentNode.getElementsByTagName('input')[0];
 	    var value = counter.value;
-	    value--;
+	    if (value > -127) {value--;}
 	    counter.value = value;
 	    reportNewOffset(counter);
 	  });
@@ -1874,28 +474,9 @@
 	    e.preventDefault();
 	    var counter = e.currentTarget.parentNode.getElementsByTagName('input')[0];
 	    var value = counter.value;
-	    value++;
+	    if (value < 127) {value++;}
 	    counter.value = value;
 	    reportNewOffset(counter);
-	  });
-	});
-
-  	// Create a Popup with known information about the value behavior at the index
-	const viewButtons = document.querySelectorAll(".button");
-  	viewButtons.forEach(view => {
-	  view.addEventListener('click', (e) => {
-	    e.preventDefault();
-	    var indexCell = e.currentTarget.parentNode.parentNode.getElementsByTagName('td')[1];
-	    var index = parseInt(indexCell.innerHTML);
-	    var popupHeader = document.querySelectorAll(".popup > h2")[0];
-	    var popupContent = document.querySelectorAll(".content")[0];
-	    var table = e.currentTarget.parentNode.parentNode.parentNode.parentNode;
-	    var caption = table.caption;
-	    popupHeader.innerHTML = caption.innerHTML + " - Index " + index;
-	    popupContent.innerHTML = behaviors[index];
-
-	    var popup = document.querySelectorAll("#popup1")[0];
-	    popup.classList.add('overlay2');
 	  });
 	});
 
@@ -1904,58 +485,30 @@
 	  counter.addEventListener('change', (e) => {
 	    e.preventDefault();
 	    var value = counter.value;
+	   	if (value < -127) {counter.value = -127;}
+	    if (value > 127) {counter.value = 127;}
 	    reportNewOffset(counter);
 	  });
 	});
 
-	// Update cells after an Offset change
+	// Update modifierData string after an Offset change
 	function reportNewOffset(c) {
-		var cell = c.parentNode.parentNode;
-		var chr = cell.previousElementSibling.innerHTML;
-		chr = String.fromCharCode(chr.charCodeAt(0) + parseInt(c.value));
-		cell.nextElementSibling.innerHTML = chr;
-		var binaryStr = getBinaryString(chr.charCodeAt(0), "HTML");
-		cell.nextElementSibling.nextElementSibling.nextElementSibling.innerHTML = binaryStr;
-		var index = parseInt(cell.previousElementSibling.previousElementSibling.innerHTML);
-		var modifierDataNode = document.querySelectorAll("#originalModifierData")[0];
-		modifierDataNode.textContent = (
-	    	modifierDataNode.textContent.slice(0, index) + chr +
-	    	modifierDataNode.textContent.slice(index + 1)
-  		);
+		let cell = c.parentNode.parentNode;
+		let index = parseInt(cell.previousElementSibling.textContent);
+		modifierDataArr[index] = c.value;
+		let tmpArr = modifierDataArr.map(x => x << 24 >>> 24);
+		let tmpModStr = toBase64(tmpArr);
+		modifierDataNode.textContent = tmpModStr;
   		highlightSegments(modifierDataNode);
 	}
 
-	// Update cells after a Binary String change
-	function reportNewBinary(c) {
-		// Modify Offset
-		var newValue = parseInt(c.textContent, 2);
-		var originalValue = parseInt(c.parentNode.getElementsByTagName('td')[2].textContent.charCodeAt(0));
-		var delta = newValue - originalValue;
-		var offsetNode = c.parentNode.getElementsByTagName('td')[3].getElementsByTagName('input')[0];
-		offsetNode.value = delta;
-		// Modify New Char
-		var newCharNode = c.parentNode.getElementsByTagName('td')[4];
-		var chr = String.fromCharCode(newValue); 
-		newCharNode.innerHTML = chr;
-		// Modify modifierData
-		var index = parseInt(c.parentNode.getElementsByTagName('td')[1].textContent);
-		var modifierDataNode = document.querySelectorAll("#originalModifierData")[0];
-		modifierDataNode.textContent = (
-	    	modifierDataNode.textContent.slice(0, index) + chr +
-	    	modifierDataNode.textContent.slice(index + 1)
-  		);
-  		highlightSegments(modifierDataNode);
-	}
-
+	// NOTE: ModifierDataArr does not line up 1:1 with the modifierData string
     function highlightSegments (node) {
 
 	    var str = (
-	        node.textContent.slice(0, 67).replace('<','&lt;').replace('>','&gt;') +
-	        '<span class="majorChord">' +
-	        node.textContent.slice(67, 109).replace('<','&lt;').replace('>','&gt;') + '</span>' +
-	        '<span class="minorChord">' +
-	        node.textContent.slice(109, 152).replace('<','&lt;').replace('>','&gt;') + '</span>' +
-	        node.textContent.slice(152).replace('<','&lt;').replace('>','&gt;')
+	        node.textContent.slice(0, 66) + '<span class="majorChord">' +
+	        node.textContent.slice(66, 109) + '</span>' + '<span class="minorChord">' +
+	        node.textContent.slice(109, 152) + '</span>' + node.textContent.slice(152)
 	    );
 
 	    node.innerHTML = str;
@@ -1965,97 +518,6 @@
 	 if (window.getSelection) {window.getSelection().removeAllRanges();}
 	 else if (document.selection) {document.selection.empty();}
 	}
-
-	var behaviors = new Object();
-
-	// Major Chord
-	behaviors[67] = "Controls the offset in semitones of the first voice. It appears that only positive offsets work.";
-	behaviors[68] = "Controls the second voice note and cycles in Major thirds (e.g. E♭-G-B) starting at the 5th. It seems to support negative values and will eventually flatten the first voice by a semitone.";
-	behaviors[69] = "Controls the third voice note and cycles in Major thirds + an octave (e.g. C1-E2-A♭3) starting at the octave. Seems to support negative values and will eventually flatten the second voice by a semitone.";
-	behaviors[70] = "Controls the third voice as an offset in semitones. It appears only negative values are useful and they must be multiples of 4 (e.g. -4, -8, -12, etc.)";
-	behaviors[71] = "Controls the last voice offset in semitones.";
-	behaviors[72] = "Controls the first voice and cycles in Major thirds (e.g. D-F♯-A♯).";
-	behaviors[73] = "Controls the second voice and cycles in Major thirds + an octave (e.g. A-C♯-F).";
-	behaviors[74] = "Controls the second voice offset in semitones. Must be multiples of 4 (e.g. -4, -8, -12, etc.)";
-	behaviors[75] = "Controls the third voice offset in semitones.";
-	behaviors[76] = "Controls the last voice and cycles in Major thirds (e.g. F-A-C♯).";
-	behaviors[77] = "Controls the first voice and cycles in Major thirds + an octave (e.g. E-A♭-C).";
-	behaviors[78] = "Controls the first voice offset in semitones. Must be multiples of 4 (e.g. -4, -8, -12, etc.)";
-	behaviors[79] = "Controls the second voice offset in semitones.";
-	behaviors[80] = "Controls the third voice and cycles in Major thirds (e.g. E-A♭-C).";
-	behaviors[81] = "Controls the last voice and cycles in Major thirds + an octave (e.g. G-B-E♭).";
-	behaviors[82] = "Very Irregular. Controls the last voice in semitones. An offet of +21 appears to lower the top voice by an octave. It appears offset values that follow 4n+1 (increments of 4 with an offset of 1).";
-	behaviors[83] = "Controls the offset in semitones of the first voice.";
-	behaviors[84] = "Controls the second voice and cycles in Major thirds (e.g. A-C♯-F).";
-	behaviors[85] = "Controls the third voice and cycles in Major thirds + an octave (e.g. C-E-G♯).";
-	behaviors[86] = "Controls the third voice offset in semitones. Must be multiples of 4 (e.g. -4, -8, -12, etc.).";
-	behaviors[87] = "Controls the last voice offset in semitones.";
-	behaviors[88] = "Controls the first voice and cycles in Major thirds + an octave (e.g. G-B-E♭).";
-	behaviors[89] = "Controls the second voice and cycles in Major thirds + an octave (e.g. B-E♭-G).";
-	behaviors[90] = "Controls the second voice offset in semitones. Must be multiples of 4 (e.g. -4, -8, -12, etc.)";
-	behaviors[91] = "Controls the third voice offset in semitones.";
-	behaviors[92] = "Controls the last voice and cycles in Major thirds (e.g. G-B-E♭).";
-	behaviors[93] = "Controls the first voice and cycles in Major thirds + an octave (e.g. A-C♯-F).";
-	behaviors[94] = "Controls the first voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[95] = "Controls the second voice offset in semitones.";
-	behaviors[96] = "Controls the third voice and cycles in Major thirds (e.g. E-G♯-C).";
-	behaviors[97] = "Controls the last voice and cycles in Major thirds + an octave (e.g. A-C♯-F).";
-	behaviors[98] = "Controls the last voice offset in semitones. Appears that it must be negative offsets. Must be multiples of 4 (e.g. -4, -8, -12, etc.)";
-	behaviors[99] = "Controls the second voice offset in semitones.";
-	behaviors[100] = "Controls the third voice and cycles in Major thirds (e.g. D-F♯-A♯)..";
-	behaviors[101] = "Controls the last voice and cycles in Major thirds + an octave (e.g. B-E♭-G)..";
-	behaviors[102] = "Controls the last voice offset in semitones. Should be a negative offset in multiples of 4 (e.g. -4, -8, -12, etc.)";
-	behaviors[103] = "Controls the first voice and cycles down in Major thirds (e.g. G-E♭-B).";
-	behaviors[104] = "Controls the second voice and cycles in Major thirds (e.g. C-E-G♯).";
-	behaviors[105] = "Controls the third voice and cycles in Major thirds + an octave (e.g. E-A♭-C).";
-	behaviors[106] = "Controls the third voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[107] = "Controls the last voice offset in semitones.";
-	behaviors[108] = "Controls the first voice and cycles in Major thirds + an octave (e.g. G-B-E♭). It appears that +24 & +28 are working values.";
-	
-	// Minor Chord
-	behaviors[109] = "Controls the first voice and cycles in Major thirds + an octave (e.g. C-E-A♭).";
-	behaviors[110] = "Controls the first voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[111] = "Controls the second voice offset in semitones.";
-	behaviors[112] = "Controls the third voice and cycles in Major thirds (e.g. G-B-E♭).";
-	behaviors[113] = "Controls the last voice and cycles in Major thirds + an octave (e.g. C-E-A♭).";
-	behaviors[114] = "Controls the last voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[115] = "Controls the first voice offset in semitones.";
-	behaviors[116] = "Controls the second voice and cycles in Major thirds (e.g. F-A-C♯).";
-	behaviors[117] = "Controls the third voice and cycles in Major thirds + an octave (e.g. A♯-D-F♯).";
-	behaviors[118] = "Controls the third voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[119] = "Controls the last voice offset in semitones.";
-	behaviors[120] = "Controls the first voice and cycles in Major thirds + an octave (e.g. E♭-G-B).";
-	behaviors[121] = "Controls the second voice and cycles in Major thirds + an octave (e.g. G-B-E♭)..";
-	behaviors[122] = "Controls the second voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[123] = "Controls the third voice offset in semitones.";
-	behaviors[124] = "Controls the last voice and cycles in Major thirds + an octave (e.g. E♭-G-B). Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[125] = "Controls the first voice and cycles in Major thirds + an octave (e.g. F-A-C♯).";
-	behaviors[126] = "Controls the first voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[127] = "Controls the second voice offset in semitones.";
-	behaviors[128] = "Controls the third voice and cycles in Major thirds (e.g. C-E-A♭).";
-	behaviors[129] = "Controls the last voice and cycles in Major thirds + an octave (e.g. F-A-C♯).";
-	behaviors[130] = "Controls the last voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[131] = "Controls the first voice offset in semitones.";
-	behaviors[132] = "Controls the second voice and cycles in Major thirds + an octave (e.g. B♭-D-G♭). Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[133] = "Controls the third voice and cycles in Major thirds + an octave (e.g. D-F♯-A♯).";
-	behaviors[134] = "Controls the third voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[135] = "Controls the last voice offset in semitones.";
-	behaviors[136] = "Controls the first voice and cycles in Major thirds + an octave (e.g. A♭-C-E). Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[137] = "Controls the second voice and cycles in Major thirds + an octave (e.g. C-E-G♯).";
-	behaviors[138] = "Controls the second voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[139] = "Controls the third voice offset in semitones.";
-	behaviors[140] = "Controls the last voice and cycles in Major thirds + an octave (e.g. A♭-C-E). Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[141] = "Controls the first voice and cycles in Major thirds + an octave (e.g. A♭-C-E).";
-	behaviors[142] = "Controls the first voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[143] = "Controls the second voice and cycles in Major thirds (e.g. D-F♯-A♯). Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[144] = "Controls the third voice and cycles in Major thirds (e.g. F-A-C♯).";
-	behaviors[145] = "Controls the last voice and cycles in Major thirds + an octave (e.g. B♭-D-G♭).";
-	behaviors[146] = "Controls the last voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[147] = "Controls the first voice offset in semitones.";
-	behaviors[148] = "Controls the second voice and cycles in Major thirds (e.g. E♭-G-B).";
-	behaviors[149] = "Controls the third voice and cycles in Major thirds + an octave (e.g. G-B-E♭).";
-	behaviors[150] = "Controls the third voice offset in semitones. Must be multiples of 4 (e.g. 4, 8, 12, etc.).";
-	behaviors[151] = "Controls the last voice offset in semitones.";
 </script>
 </body>
 </html>

@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="cache-control" content="public">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Orba Chord Fiddler</title>
+	<style type="text/css">
+		body {
+		  font-family: "Open Sans", sans-serif;
+		  font-size: 18px;
+		  font-weight: 400;
+		  color: #c1c4e1;
+		  line-height: 1.0;
+		  background-color: #000000;
+		}
+		h1 {
+		  margin-top: 0px;
+		  line-height: 0.25;
+		}
+		h3 {
+		  margin-top: 0;
+		  color: #8184a1;
+		}
+		caption {
+		  margin-bottom: 20px;
+		}
+		th {
+		  color: #c1c4e1;
+		}
+		table, th, td {
+			border: 1px solid;
+			border-collapse: collapse;
+			padding: 10px;
+    		justify-content: center;
+    		text-align:center;
+		}
+		tbody:nth-child(odd) {
+    	  		background-color: #222;
+		}
+		a:link, a:visited {
+		  transition: color 0.15s ease 0s, border-color 0.15s ease 0s, background-color 0.15s ease 0s;
+		}
+		button {
+		  position: relative;
+		  border-radius: 3px;
+		  margin-top: 0px;
+		  margin-left: 2px;
+		  margin-right: 2px;
+		  padding: 8px 20px;
+		  border: 0;
+		  font-size: 0.835em;
+		  text-transform: uppercase;
+		  letter-spacing: 0.125em;
+		  font-weight: bold;
+		  color: #FFF;
+		  background: #FE8C0C;
+		  transition: background .275s;
+		}
+		button:hover,button:focus {
+		  background: #212121;
+		  cursor: pointer;
+		}
+		* {
+		  box-sizing: border-box;
+		}
+		.button {
+		  border-radius: 3px;
+		  text-decoration: none;
+		  cursor: pointer;
+		  display: block;
+		  width: 6ch;
+		  height: 23px;
+		  margin: 0px;
+		  background: #dee0ee;
+		  text-decoration: none;
+		  text-align: center;
+		  line-height: 23px;
+		  transition: all 0.3s ease-out;
+		}
+		.button:hover {
+		  background: #575b71;
+		  color: #fff;
+		}
+		.container {
+		  display: flex;
+		  width: 100%;
+		  flex-direction: column;
+		  justify-content: center;
+		  align-items: center;
+		}
+		.copied .done {
+		  opacity: 1;
+		  transform: translateY(-2em);
+		}
+		.done {
+		  position: absolute;
+		  left: 0; top: 0; right: 0;
+		  text-align: center;
+		  opacity: 0;
+		  transform: translateY(-1em);
+		  color: #FFF;
+		  transition: all .500s;
+		}
+		.header {
+			position: fixed; 
+			top: 0; 
+			left: 0; 
+			right: 0; 
+			height: 350px; 
+			background: linear-gradient(0deg, rgba(19,19,84,1) 0%, rgba(2,0,36,1) 100%);
+		}
+		.chord {
+		  color: #FE8C0C;
+		}
+		.content {
+		  color: #777;
+		  margin-top: 30px;
+		  line-height: 1.2;
+		}
+		.column {
+		  float: left;
+		  width: 25%;
+		}
+		.instructions {
+		  text-indent: -3.4em;
+		  padding-left: 3.4em;
+		  padding-top: 5px;
+		  width: 81ch;
+		  height: 3ch;
+		  padding-left: 100px;
+    	  margin-top: 10px;
+		  line-height: 1.2;
+		}
+		.leadingChrs, .trailingChrs {
+		  background: #575b71;
+		  color: #fff;
+		}
+		.majorChord {
+		  background: #1DAFE7;
+		  color: #fff;
+		}
+		.minorChord {
+		  background: #F959F1;
+		  color: #fff;
+		}
+		.tableCaption {
+		  padding: 10px;
+		  border-radius: 3px;
+		}
+		.modifierData {
+		  margin-bottom: 40px;
+		  font-family: "Courier";
+		  width: 82ch;
+		  height: 3ch;
+		  word-break: break-all;
+		  border: 1px solid;
+		}
+		.quantity {
+		  display: flex;
+		  align-items: center;
+		  justify-content: center;
+		  padding: 10;
+		}
+		.quantity__minus,
+		.quantity__plus {
+		  display: block;
+		  width: 22px;
+		  height: 23px;
+		  margin: 0;
+		  background: #dee0ee;
+		  text-decoration: none;
+		  text-align: center;
+		  line-height: 23px;
+		}
+		.quantity__minus:hover,
+		.quantity__plus:hover {
+		  background: #575b71;
+		  color: #fff;
+		} 
+		.quantity__minus {
+		  border-radius: 3px 0 0 3px;
+		}
+		.quantity__plus {
+		  border-radius: 0 3px 3px 0;
+		}
+		.quantity__input {
+		  width: 35px;
+		  height: 23px;
+		  margin: 0;
+		  padding: 0;
+		  text-align: center;
+		  border-top: 2px solid #dee0ee;
+		  border-bottom: 2px solid #dee0ee;
+		  border-left: 1px solid #dee0ee;
+		  border-right: 2px solid #dee0ee;
+		  background: #fff;
+		  color: #8184a1;
+		}
+		.quantity__minus:link,
+		.quantity__plus:link {
+		  color: #8184a1;
+		} 
+		.quantity__minus:visited,
+		.quantity__plus:visited {
+		  color: #fff;
+		}
+		.row {
+		  margin-left:-5px;
+		  margin-right:-5px;
+		  min-width:1400px;
+		}
+		.row::after {
+		  content: "";
+		  clear: both;
+		  display: table;
+		}
+		.spacer {
+		  margin-top:325px;
+		}
+		.tightCaption {
+		  margin-bottom: 10px;
+		}
+		.valueTable {
+		  margin: 50px;
+		}
+		#chordDataMajor,#leadingChrs {
+			float: right;
+		}
+	</style>
+</head>
+<body>
+<div class="header container">
+  	<h1>Orba Fiddler</h1>
+  	<h3>ModifierData String Manipulator</h3>
+    <div id="tokenModifierData" style="display: none;"></div>
+  	<table class="modifierData">
+  		<caption class="tightCaption">ModifierData</caption>
+  		<tr><td id="originalModifierData"></td></tr>
+  	</table>
+  	<div>
+	  	<button id="copy" type="button">Copy to clipboard<span class="done" aria-hidden="true">Copied</span></button>
+	  	<button id="deploy" type="button">Deploy<span class="done" aria-hidden="true">Deploying</span></button>
+  	</div>
+  	<div class="instructions">
+  	<b>NOTE:</b> Use at your own risk. Modifying these values can/will produce undesirable effects such as distortion, indefinite high pitch noises and even the loss of use of the Chord Mode.
+  	</div>
+</div>
+<div class="spacer">
+	<div class="row">
+	  <div class="column">
+		<table id="leadingChrs" class="valueTable">
+			<caption><span class="leadingChrs tableCaption">Leading Characters</span></caption>
+			<tr>
+			   <th>Area</th>
+			   <th>Data Index</th>
+			   <th>Value</th>
+			</tr>
+			<tbody>
+				<tr>
+				   <td rowspan="5">1</td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>	
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+			</tbody>
+		</table>
+	  </div>
+	  <div class="column">
+		<table id="chordDataMajor" class="valueTable">
+			<caption><span class="majorChord tableCaption">Major Key</span></caption>
+			<tr>
+			   <th>Pad/Chord</th>
+			   <th>Data Index</th>
+			   <th>Root Note Offset</th>
+			</tr>
+			<tbody>
+				<tr>
+				   <td rowspan="4">1</td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>	
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+			</tbody>
+		</table>
+	  </div>
+	  <div class="column">
+		<table id="chordDataMinor" class="valueTable">
+			<caption><span class="minorChord tableCaption">Minor Key</span></caption>
+			<tr>
+			   <th>Pad/Chord</th>
+			   <th>Data Index</th>
+			   <th>Root Note Offset</th>
+			</tr>
+			<tbody>
+				<tr>
+				   <td rowspan="4">1</td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>	
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+			</tbody>
+		</table>
+	  </div>
+	  <div class="column">
+		<table id="trailingChrs" class="valueTable">
+			<caption><span class="leadingChrs tableCaption">Trailing Characters</span></caption>
+			<tr>
+			   <th>Area</th>
+			   <th>Data Index</th>
+			   <th>Value</th>
+			</tr>
+			<tbody>
+				<tr>
+				   <td rowspan="5">1</td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>	
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr>
+				   <td style="display:none"></td>
+				   <td></td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input name="quantity" type="text" class="quantity__input" value="0">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+			</tbody>
+		</table>
+	  </div>
+	</div>
+</div>
+<script type="text/javascript">
+
+	// Load standard chord voicings
+	var modifierData="AgAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAQgAAAAEAAAAAAAAAAABAAEAIAAAAAAABwwQAAcMDwAHDA8ABAcQAAQHDAADBwwAAwz8AAQM+wADBwAAAwgAAAQHAAADBwAAAwcAAAQHAAAEBwAAAwcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+	var modifierDataArr = fromBase64(modifierData).map(x => x << 24 >> 24);
+
+	// Add modifierData string and highlight segments of interest
+	var modifierDataNode = document.querySelectorAll("#originalModifierData")[0];
+	modifierDataNode.textContent = modifierData;
+	highlightSegments(modifierDataNode);
+
+	// Grab references to the important elements
+	var majorTable = document.getElementById("chordDataMajor");
+	var minorTable = document.getElementById("chordDataMinor");
+	var leadingTable = document.getElementById("leadingChrs");
+	var trailingTable = document.getElementById("trailingChrs");
+	var padVoiceNode = majorTable.children[2];
+	var charactersNode = leadingTable.children[2];
+
+	// Loop to add the Pad Voice structure/node dynamically
+	for (let i = 0; i < 7; i++) {
+  		let pvn = padVoiceNode.cloneNode(true);
+  		pvn.querySelectorAll(('tr td:first-child'))[0].textContent = i + 2;
+		majorTable.appendChild(pvn);
+		minorTable.appendChild(pvn.cloneNode(true));
+	}
+	for (let i = 0; i < 9; i++) {
+  		let chrn = charactersNode.cloneNode(true);
+  		chrn.querySelectorAll(('tr td:first-child'))[0].textContent = i + 2;
+		leadingTable.appendChild(chrn);
+		trailingTable.appendChild(chrn.cloneNode(true));
+	}
+	for (let i = 0; i < 3; i++) {
+  		let chrn = charactersNode.cloneNode(true);
+  		chrn.querySelectorAll(('tr td:first-child'))[0].textContent = i + 11;
+		trailingTable.appendChild(chrn.cloneNode(true));
+	}
+    trailingTable.deleteRow(trailingTable.rows.length -1);
+    trailingTable.deleteRow(trailingTable.rows.length -1);
+
+	// Dynamically add the ModifierDataArr indexes
+	var indexNodes = document.querySelectorAll(('.valueTable tr td:first-child'));
+  	indexNodes.forEach((node, i) => {
+  		let index = i
+  		node.nextElementSibling.textContent = index;
+  		node.nextElementSibling.nextElementSibling.getElementsByTagName('input')[0].value = modifierDataArr[index];
+	});
+
+  	function toBase64(u8) {
+    	return btoa(String.fromCharCode.apply(null, u8));
+	}
+
+	function fromBase64(str) {
+	    return atob(str).split('').map(function (c) { return c.charCodeAt(0); });
+	}
+
+  	// Grab references to the buttons
+    var btnCopy = document.getElementById( 'copy' );
+    var btnDeploy = document.getElementById( 'deploy' );
+ 
+	btnCopy.addEventListener( 'click', function() {
+  	  var toCopy  = document.getElementById( 'originalModifierData' );
+	  var selection = window.getSelection();        
+	  var range = document.createRange();
+	  range.selectNodeContents(toCopy);
+	  selection.removeAllRanges();
+	  selection.addRange(range);
+		try {
+		   var successful = document.execCommand('copy');
+		  if(successful) {
+		    console.log("Copied");
+		      btnCopy.classList.add( 'copied' );
+			    clearSelection();
+			    
+			      var temp = setInterval( function(){
+			        btnCopy.classList.remove( 'copied' );
+			        clearInterval(temp);
+			      }, 600 );
+			  btnCopy.blur();
+		}
+		else
+		   { console.log("Unable to Copy");} 
+		} catch (err) {
+	  console.log(err);
+		}
+	  
+	  return false;
+	} );
+
+	btnDeploy.addEventListener( 'click', function() {
+	  var toCopy = document.createElement("input");
+      toCopy.style = "position: absolute; left: -1000px; top: -1000px";
+  	  toCopy.value = "DEPLOY" + document.getElementById( 'originalModifierData' ).textContent;
+  	  document.body.appendChild(toCopy);
+      toCopy.select();
+		try {
+		   var successful = document.execCommand('copy');
+		  if(successful) {
+		    console.log("Copied");
+		      btnDeploy.classList.add( 'copied' );
+			    clearSelection();
+			    
+			      var temp = setInterval( function(){
+			        btnDeploy.classList.remove( 'copied' );
+			        clearInterval(temp);
+			      }, 600 );
+			  btnDeploy.blur();
+		}
+		else
+		   { console.log("Unable to Copy");} 
+		} catch (err) {
+	  		console.log(err);
+		}
+	  document.body.removeChild(toCopy);
+
+	  return false;
+	} );
+
+  	const minusButtons = document.querySelectorAll(".quantity__minus");
+  	minusButtons.forEach(minus => {
+	  minus.addEventListener('click', (e) => {
+	    e.preventDefault();
+	    var counter = e.currentTarget.parentNode.getElementsByTagName('input')[0];
+	    var value = counter.value;
+	    if (value > -127) {value--;}
+	    counter.value = value;
+	    reportNewOffset(counter);
+	  });
+	});
+  
+  	const plusButtons = document.querySelectorAll(".quantity__plus");
+  	plusButtons.forEach(plus => {
+	  plus.addEventListener('click', (e) => {
+	    e.preventDefault();
+	    var counter = e.currentTarget.parentNode.getElementsByTagName('input')[0];
+	    var value = counter.value;
+	    if (value < 127) {value++;}
+	    counter.value = value;
+	    reportNewOffset(counter);
+	  });
+	});
+
+	const counters = document.querySelectorAll("input");
+	counters.forEach(counter => {
+	  counter.addEventListener('change', (e) => {
+	    e.preventDefault();
+	    var value = counter.value;
+	   	if (value < -127) {counter.value = -127;}
+	    if (value > 127) {counter.value = 127;}
+	    reportNewOffset(counter);
+	  });
+	});
+
+	// Update modifierData string after an Offset change
+	function reportNewOffset(c) {
+		let cell = c.parentNode.parentNode;
+		let index = parseInt(cell.previousElementSibling.textContent);
+		modifierDataArr[index] = c.value;
+		let tmpArr = modifierDataArr.map(x => x << 24 >>> 24);
+		let tmpModStr = toBase64(tmpArr);
+		modifierDataNode.textContent = tmpModStr;
+  		highlightSegments(modifierDataNode);
+	}
+
+	// NOTE: ModifierDataArr does not line up 1:1 with the modifierData string
+    function highlightSegments (node) {
+
+	    var str = (
+	        node.textContent.slice(0, 66) + '<span class="majorChord">' +
+	        node.textContent.slice(66, 109) + '</span>' + '<span class="minorChord">' +
+	        node.textContent.slice(109, 152) + '</span>' + node.textContent.slice(152)
+	    );
+
+	    node.innerHTML = str;
+    }
+
+	function clearSelection() {
+	 if (window.getSelection) {window.getSelection().removeAllRanges();}
+	 else if (document.selection) {document.selection.empty();}
+	}
+</script>
+</body>
+</html>

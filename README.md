@@ -22,15 +22,19 @@ I was lucky to find Philip Zastrow's [CSS Piano](https://codepen.io/zastrow/pen/
 To set this up, launch the Orba app and connect to the Orba. Now open the *OrbaVirtualPiano.html* page in the Chrome Browser. You may have to use only a wired connection to get the connection working in both directions. This app is a huge help when trying to design your own chords.
 
 ## Orba Chord Fiddler
-Each Orba Chord Preset voice contains a string named `ModifierData` that controls voice/note offsets. This utility allows you to modify the characters in the string and quickly deploy them to the Orba App. I have included known behaviors for each character. I'm sure my discoveries are not yet complete!
+Each Orba Chord Preset voice contains a string named `ModifierData` that controls voice/note offsets. This utility allows you to modify the characters in the string and quickly deploy them to the Orba App.
 ### USAGE:
-Start by launching the *OrbaDeployDaemon*. This can be run from either the Windows Powershell console or the Mac Terminal. An even easier way is to launch it from the file itself. Simply double click the *OrbaDeployDaemon.sh* in your Mac Finder to run it in your Terminal app or right-click *OrbaDeployDaemon.ps1* in Windows and choose 'Run in PowerShell'. You may have to give this script permission since you've downloaded it from the internet.
+Click on `Code` and `Download Zip` at the top of the main repository page, then unzip to a suitable folder.
 
-Once the daemon is listening, open the *OrbaChordFiddler.html* file in the Chrome Browser and adjust the *Offsets*. Click the `View` buttons to see what each character does to the chords. Fiddle Away! I recommend you only change a few offsets at a time as it can be difficult to understand what is going on. For example, setting some voice's offsets to negative offsets can cause the previous voice to lower by a semitone (or more)! This can be an undesired (or sometimes desired) effect.
+Start by launching the *OrbaDeployDaemon* in the *root* folder. This can be run from either the Windows Powershell console or the Mac Terminal. An even easier way is to launch it from the file itself. Simply double click the *OrbaDeployDaemon.sh* in your Mac Finder to run it in your Terminal app or right-click *OrbaDeployDaemon.ps1* in Windows and choose 'Run in PowerShell'. You may have to give this script permission since you've downloaded it from the internet.
+
+Once the daemon is listening, enter the *html* sub-folder, open *OrbaChordFiddler.html* file in the Chrome Browser and finally adjust the *Offsets*. Each pad plays a 4 voice chord as defined by the offsets in the tables. Each value controls the note offset in semitones from that chord's corresponding root note.
 
 Once you are ready to hear your changes, click the `DEPLOY` button and wait about 5 seconds. The Orba App should appear. Now you need to manually load the *Disentangle* Chord Preset to your Orba. Once this is done, listen for changes or switch over to the *OrbaVirtualPiano* to see the changes.
 
 Rinse and Repeat. I hope you enjoy...
+
+Watch the Demo video below to better understand the workflow.
 
 ## Orba Update Thumbnail Script
 This script makes it easy to change the thumbnail image for any *.orbapreset* file. The Orba app installs the Preset voices in the following locations:

@@ -24,7 +24,7 @@ To set this up, launch the Orba app and connect to the Orba. Now open the *OrbaV
 ## Orba Chord Fiddler
 Each Orba Chord Preset voice contains a string named `ModifierData` that controls voice/note offsets. This utility allows you to modify the characters in the string and quickly deploy them to the Orba App.
 ### USAGE:
-Click on `Code` and `Download Zip` at the top of the main repository page, then unzip to a suitable folder.
+Make sure to be on the `Code` tab and then press the green `Code ▼` button to expand the drop-down. From the drop-down, choose `Download ZIP`. Once the file has completed downloading, unzip it to a suitable folder.
 
 Start by launching the *OrbaDeployDaemon* in the *root* folder. This can be run from either the Windows Powershell console or the Mac Terminal. An even easier way is to launch it from the file itself. Simply double click the *OrbaDeployDaemon.sh* in your Mac Finder to run it in your Terminal app or right-click *OrbaDeployDaemon.ps1* in Windows and choose 'Run in PowerShell'. You may have to give this script permission since you've downloaded it from the internet.
 

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Orba Chord/Scale Editor</title>
+	<link rel="stylesheet" href="css/styles.css">
+	<script type="text/javascript" src="data/orba-scales.json"></script>
+</head>
+<body>
+	<h1>Orba <span class="midi">Chord/Scale</span> Editor: <span id="voice" class="chord">Chord</span></h1>
+	<ul class="set">
+		<li data-midi-note="24" class="octave1 white c"></li>
+		<li data-midi-note="25" class="octave1 black cs"></li>
+		<li data-midi-note="26" class="octave1 white d"></li>
+		<li data-midi-note="27" class="octave1 black ds"></li>
+		<li data-midi-note="28" class="octave1 white e"></li>
+		<li data-midi-note="29" class="octave1 white f"></li>
+		<li data-midi-note="30" class="octave1 black fs"></li>
+		<li data-midi-note="31" class="octave1 white g"></li>
+		<li data-midi-note="32" class="octave1 black gs"></li>
+		<li data-midi-note="33" class="octave1 white a"></li>
+		<li data-midi-note="34" class="octave1 black as"></li>
+		<li data-midi-note="35" class="octave1 white b"></li>
+		<li data-midi-note="36" class="octave2 white c"></li>
+		<li data-midi-note="37" class="octave2 black cs"></li>
+		<li data-midi-note="38" class="octave2 white d"></li>
+		<li data-midi-note="39" class="octave2 black ds"></li>
+		<li data-midi-note="40" class="octave2 white e"></li>
+		<li data-midi-note="41" class="octave2 white f"></li>
+		<li data-midi-note="42" class="octave2 black fs"></li>
+		<li data-midi-note="43" class="octave2 white g"></li>
+		<li data-midi-note="44" class="octave2 black gs"></li>
+		<li data-midi-note="45" class="octave2 white a"></li>
+		<li data-midi-note="46" class="octave2 black as"></li>
+		<li data-midi-note="47" class="octave2 white b"></li>
+		<li data-midi-note="48" class="octave3 white c"></li>
+		<li data-midi-note="49" class="octave3 black cs"></li>
+		<li data-midi-note="50" class="octave3 white d"></li>
+		<li data-midi-note="51" class="octave3 black ds"></li>
+		<li data-midi-note="52" class="octave3 white e"></li>
+		<li data-midi-note="53" class="octave3 white f"></li>
+		<li data-midi-note="54" class="octave3 black fs"></li>
+		<li data-midi-note="55" class="octave3 white g"></li>
+		<li data-midi-note="56" class="octave3 black gs"></li>
+		<li data-midi-note="57" class="octave3 white a"></li>
+		<li data-midi-note="58" class="octave3 black as"></li>
+		<li data-midi-note="59" class="octave3 white b"></li>
+		<li data-midi-note="60" class="octave4 white c"></li>
+		<li data-midi-note="61" class="octave4 black cs"></li>
+		<li data-midi-note="62" class="octave4 white d"></li>
+		<li data-midi-note="63" class="octave4 black ds"></li>
+		<li data-midi-note="64" class="octave4 white e"></li>
+		<li data-midi-note="65" class="octave4 white f"></li>
+		<li data-midi-note="66" class="octave4 black fs"></li>
+		<li data-midi-note="67" class="octave4 white g"></li>
+		<li data-midi-note="68" class="octave4 black gs"></li>
+		<li data-midi-note="69" class="octave4 white a"></li>
+		<li data-midi-note="70" class="octave4 black as"></li>
+		<li data-midi-note="71" class="octave4 white b"></li>
+		<li data-midi-note="72" class="octave5 white c"></li>
+		<li data-midi-note="73" class="octave5 black cs"></li>
+		<li data-midi-note="74" class="octave5 white d"></li>
+		<li data-midi-note="75" class="octave5 black ds"></li>
+		<li data-midi-note="76" class="octave5 white e"></li>
+		<li data-midi-note="77" class="octave5 white f"></li>
+		<li data-midi-note="78" class="octave5 black fs"></li>
+		<li data-midi-note="79" class="octave5 white g"></li>
+		<li data-midi-note="80" class="octave5 black gs"></li>
+		<li data-midi-note="81" class="octave5 white a"></li>
+		<li data-midi-note="82" class="octave5 black as"></li>
+		<li data-midi-note="83" class="octave5 white b"></li>
+		<li data-midi-note="84" class="octave6 white c"></li>
+		<li data-midi-note="85" class="octave6 black cs"></li>
+		<li data-midi-note="86" class="octave6 white d"></li>
+		<li data-midi-note="87" class="octave6 black ds"></li>
+		<li data-midi-note="88" class="octave6 white e"></li>
+		<li data-midi-note="89" class="octave6 white f"></li>
+		<li data-midi-note="90" class="octave6 black fs"></li>
+		<li data-midi-note="91" class="octave6 white g"></li>
+		<li data-midi-note="92" class="octave6 black gs"></li>
+		<li data-midi-note="93" class="octave6 white a"></li>
+		<li data-midi-note="94" class="octave6 black as"></li>
+		<li data-midi-note="95" class="octave6 white b"></li>
+		<li data-midi-note="96" class="octave6 white c"></li>
+	</ul>
+	<div class="container">
+		<table id="chordOffsetTable" class="offsetTable">
+			<caption><span class="tableCaption">Chord Offsets</span></caption>
+			<tr>
+			   <th>
+			   	<div class="iFlex">
+				   	<div class="conceal">
+					   	<select id="key" class="theme-gray concealLeft" tabindex="1">
+						  <option value="0">C</option>
+						  <option value="1">D♭</option>
+						  <option value="2">D</option>
+						  <option value="3">E♭</option>
+						  <option value="4">E</option>
+						  <option value="5">F</option>
+						  <option value="6">G♭</option>
+						  <option value="7">G</option>
+						  <option value="8">A♭</option>
+						  <option value="9">A</option>
+						  <option value="10">B♭</option>
+						  <option value="11">B</option>
+						</select>
+					</div>
+				   	<div class="conceal">
+					   	<select id="Mode" class="theme-artiphon-major concealRight" tabindex="2"
+					   	  onchange="setScaleMode(this)">
+						  <option value="Maj" selected="selected">&#160;&#160;&#160;&#160;Maj</option>
+						  <option value="min">&#160;&#160;&#160;&#160;min</option>
+						</select>
+					</div>
+				</div>
+			   </th>
+			   <th><button class="padButton" tabindex="3">Pad 1</button></th>
+			   <th><button class="padButton" tabindex="8">Pad 2</button></th>
+			   <th><button class="padButton" tabindex="13">Pad 3</button></th>
+			   <th><button class="padButton" tabindex="18">Pad 4</button></th>
+			   <th><button class="padButton" tabindex="23">Pad 5</button></th>
+			   <th><button class="padButton" tabindex="28">Pad 6</button></th>
+			   <th><button class="padButton" tabindex="33">Pad 7</button></th>
+			   <th><button class="padButton" tabindex="38">Pad 8</button></th>
+			</tr>
+			<tbody>
+				<tr class="voice">
+				   <td>Voice 1</td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="50" name="quantity" type="text" class="quantity__input" value="0" tabindex="4">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="54" name="quantity" type="text" class="quantity__input" value="0" tabindex="9">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="58" name="quantity" type="text" class="quantity__input" value="0" tabindex="14">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="62" name="quantity" type="text" class="quantity__input" value="0" tabindex="19">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="66" name="quantity" type="text" class="quantity__input" value="0" tabindex="24">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="70" name="quantity" type="text" class="quantity__input" value="0" tabindex="29">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="74" name="quantity" type="text" class="quantity__input" value="0" tabindex="34">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="78" name="quantity" type="text" class="quantity__input" value="0" tabindex="39">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr class="voice">
+				   <td>Voice 2</td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="51" name="quantity" type="text" class="quantity__input" value="0" tabindex="5">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="55" name="quantity" type="text" class="quantity__input" value="0" tabindex="10">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="59" name="quantity" type="text" class="quantity__input" value="0" tabindex="15">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="63" name="quantity" type="text" class="quantity__input" value="0" tabindex="20">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="67" name="quantity" type="text" class="quantity__input" value="0" tabindex="25">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="71" name="quantity" type="text" class="quantity__input" value="0" tabindex="30">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="75" name="quantity" type="text" class="quantity__input" value="0" tabindex="35">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="79" name="quantity" type="text" class="quantity__input" value="0" tabindex="40">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr class="voice">
+				   <td>Voice 3</td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="52" name="quantity" type="text" class="quantity__input" value="0" tabindex="6">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="56" name="quantity" type="text" class="quantity__input" value="0" tabindex="11">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="60" name="quantity" type="text" class="quantity__input" value="0" tabindex="16">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="64" name="quantity" type="text" class="quantity__input" value="0" tabindex="21">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="68" name="quantity" type="text" class="quantity__input" value="0" tabindex="26">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="72" name="quantity" type="text" class="quantity__input" value="0" tabindex="31">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="76" name="quantity" type="text" class="quantity__input" value="0" tabindex="36">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="80" name="quantity" type="text" class="quantity__input" value="0" tabindex="41">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr class="voice">
+				   <td>Voice 4</td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="53" name="quantity" type="text" class="quantity__input" value="0" tabindex="7">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="57" name="quantity" type="text" class="quantity__input" value="0" tabindex="12">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="61" name="quantity" type="text" class="quantity__input" value="0" tabindex="17">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="65" name="quantity" type="text" class="quantity__input" value="0" tabindex="22">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="69" name="quantity" type="text" class="quantity__input" value="0" tabindex="27">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="73" name="quantity" type="text" class="quantity__input" value="0" tabindex="32">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="77" name="quantity" type="text" class="quantity__input" value="0" tabindex="37">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				   <td>
+				   	<div class="quantity">
+					    <a href="#" class="quantity__minus" tabindex="-1"><span>-</span></a>
+					    <input id="81" name="quantity" type="text" class="quantity__input" value="0" tabindex="42">
+					    <a href="#" class="quantity__plus" tabindex="-1"><span>+</span></a>
+					</div>
+				   </td>
+				</tr>
+				<tr class="assignments">
+					<td>Assignments</td>
+					<td colspan="8">
+					<div class="spacer">&nbsp;</div>
+					Major: 
+						<select id="MajScale" class="theme-gray scaleSelection" onchange="">
+						</select>
+					Minor:
+						<select id="MinScale" class="theme-gray scaleSelection" onchange="">
+						</select>
+					<div class="spacer">&nbsp;</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="fileArea">
+			<div>
+				<div class="dragAndDropHeader">Starting Template:</div>
+			    <div id="holder" class="holder">
+				  	<input type="file" id="file_upload" accept=".orbapreset" style="display: none;" />
+					<span class="dragAndDrop">Drag & Drop <span class="midi">-or-</span></span><label for="file_upload">Browse</label>
+					<div><b>Selected File:</b></div><div id="currentFile">No File Selected.</div>
+			    </div>
+			</div>
+		    <div>
+				<div class="dragAndDropHeader">Save As:</div>
+			    <div id="holder2">
+			    	<span class="filename">Filename:</span>
+				  	<input id="file_download" class="saveAsContent" placeholder="destination.orbapreset" />
+				  	<span class="dataType"><b>Type: </b><span id="dataType">Chord Offsets</span></span>
+					<button id="downloadBtn" class="downloadBtn">Download</button>
+			    </div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript" src="js/orba-editer.js"></script>
+</body>
+</html>

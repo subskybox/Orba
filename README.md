@@ -6,33 +6,35 @@ Orba is made by [Artiphon](https://artiphon.com/pages/orba-by-artiphon).
 Orba software is avaible in the [Downloads](https://artiphon.com/pages/downloads) section of their website but is known to be fairly feature limited compared to what their customers would like see. For this reason, I am sharing a few Orba Utilities I have built.
 
 ## What Utilities have I built?
-This repository currently contains 3 Orba Utilities to help you perform advanced changes to your Orba. These 3 utilities help you to edit Preset voices and are listed here:
+This repository contains several Orba Utilities to help you perform advanced changes to your Orba. These utilities help you to edit Preset voicings (i.e. apply custom chords and scales that are transposable). Some of these utilities have been moved to the `archived` folder as the tools have been combined/simplified. As I'm learning more about how the Orba and .orbapreset files correspond, I may modify the structure further.
 
-1. **Orba Virtual Piano**
->> An HTML (Chrome Browser) based virtual piano that interfaces (MIDI-IN | MIDI-OUT) with your Orba
-2. **Orba Chord Fiddler**
->> An HTML (Chrome Browser) data modifier that helps you modify Chord Preset voices. This allows you to create custom chords. Almost any chord can be made but not for any Pad.
-3. **Orba Update Thumbnail Script**
+1. **Orba Chord and Scale Editor**
+>> An HTML based Editor that interfaces (MIDI-IN | MIDI-OUT) with your Orba
+2. **Orba Update Thumbnail Script**
 >> A script to help simplify the task of changing a Preset voice's thumbnail as seen in the Orba App.
 
-## Orba Virtual Piano
-A MIDI GUI keyboard that works bidirectionally with Orba! I was surprised that Google Chrome has a native MIDI interface so I was able to not only play the Orba patches from the webpage I made, but also visualize the notes being played on the Orba. This was instrumental(no pun intented) in figuring out what MIDI data was coming out of the Orba.
-I was lucky to find Philip Zastrow's [CSS Piano](https://codepen.io/zastrow/pen/kxdYdk) as a starting point. This repo includes *OrbaVirtualPiano.html* which will show you which notes are being emitted from the Orba and will also send MIDI notes to the Orba. (It might even support MIDI from other devices).
-
-To set this up, launch the Orba app and connect to the Orba. Now open the *OrbaVirtualPiano.html* page in the Chrome Browser. You may have to use only a wired connection to get the connection working in both directions. This app is a huge help when trying to design your own chords.
-
-## Orba Chord Fiddler
-Each Orba Chord Preset voice contains a string named `ModifierData` that controls voice/note offsets. This utility allows you to modify the characters in the string and quickly deploy them to the Orba App.
+## Orba Chord and Scale Editor
+An Orba Preset voice editor that allows you to completely customize Chords & Scales for any Orba Preset! It features a  GUI-MIDI keyboard that works bi-directionally with Orba, as well as a fluid editing interface to edit Chord voicings and/or Major/Minor Scale sets.
 ### USAGE:
 Make sure to be on the `Code` tab and then press the green `Code ▼` button to expand the drop-down. From the drop-down, choose `Download ZIP`. Once the file has completed downloading, unzip it to a suitable folder.
 
-Start by launching the *OrbaDeployDaemon* in the *root* folder. This can be run from either the Windows Powershell console or the Mac Terminal. An even easier way is to launch it from the file itself. Simply double click the *OrbaDeployDaemon.sh* in your Mac Finder to run it in your Terminal app or right-click *OrbaDeployDaemon.ps1* in Windows and choose 'Run in PowerShell'. You may have to give this script permission since you've downloaded it from the internet.
+To set this up, launch the Orba app and connect to the Orba. Now open the *OrbaChordAndScaleEditor.html* page in the *Chrome* or *Edge with Chrome* Browser. You may have to use only a wired connection to get the connection working in both directions. The Editor will switch to the natural context of your Orba's current Mode. For example, if you are in Bass/Lead mode the editor defaults to the Scale drop-downs. If you are in Chord mode, the Editor defaults to the 4 voice Offsets grid. You can toggle the Editor mode by clicking on the Table Caption/Header. Choose the Key and Major/Minor settings you'd like to work with and click the mouse on the virtual keyboard to send notes to the Orba.
 
-Once the daemon is listening, enter the *html* sub-folder, open *OrbaChordFiddler.html* file in the Chrome Browser and finally adjust the *Offsets*. Each pad plays a 4 voice chord as defined by the offsets in the tables. Each value controls the note offset in semitones from that chord's corresponding root note.
+#### Setup:
+Start by choosing a starting Preset. Load your Orba with the Preset you would like to edit and then drag & drop that Preset (.orbapreset file) from the Presets folder into the *Starting Template* box at the bottom of the Editor. Play a few notes on the Orba and the Editor should switch to the corresponding mode and highlight the notes you've played on the virtual keyboard. You're ready to start editing.
 
-Once you are ready to hear your changes, click the `DEPLOY` button and wait about 5 seconds. The Orba App should appear. Now you need to manually load the *Disentangle* Chord Preset to your Orba. Once this is done, listen for changes or switch over to the *OrbaVirtualPiano* to see the changes.
+#### Chord Mode:
+Each value controls the note offset for the corresponding voice in semitones from that chord's corresponding root note. Each Pad Button plays a 4 voice chord as defined by the offsets in the tables. Toggling between Major/Minor mode will re-populate these values with the corresponding offsets. The values are maintained for each mode. In this way you can store 8 chords for Major mode and 8 chords for Minor mode. Chords do not need to be 4 voices. You can have 3 voice chords by simply doubling one of the voice offsets to land on the same note. This can also be used with 2 notes to create melodic harmonies/couterpoint.
+>**PRO TIP**: Holding `SHIFT` while clicking the `+/-` buttons will copy that value to the rest of the voices for that Pad.
 
-Rinse and Repeat. I hope you enjoy...
+>**PRO TIP**: Values can be entered manually and the Tab order has been set to move in rows.
+
+#### Scale Mode:
+Two drop-downs appear. One defines the scale that will be applied to the Major mode and the the other defines the scale applied to the Minor mode. Clicking the Pad Buttons will allow you to hear/see that scale. Scales can be customized by adding the appropriate offset values to the *orba-scales.json* file in the `data` folder.
+>**PRO TIP**: You can toggle to Chord mode by clicking the Table Caption/Header. By modifying all 4 voices to the same value, you can work out what offsets need to be added to the *orba-scales.json* file.
+
+#### Saving your new Preset:
+When you're happy with your changes, provide an appropriate filename for your new Preset in the *Save As* Filename textbox at the bottom of the Editor. The default filename is the name of the file you've selected for the *Starting Template*. Press the `Download` Button in the *Save As* area. This will download the file in the same way that you download any other file from the internet. Many browsers default to store downloaded files into the user's *Downloads* folder but is usually also visible within the browser. As a final step, move the the file you've just downloaded into the appropriate Presets folder used by your Orba app and then load the new Preset into your Orba in the regular way. 
 
 Watch the Demo video below to better understand the workflow.
 
@@ -61,7 +63,7 @@ The script will update the *.orbapreset* file at the specified path and replace 
 
 ## Demo
 
-https://user-images.githubusercontent.com/3968129/170634427-3393d130-ccbd-4afb-a6ce-5c203fd72133.mov
+`COMING SOON`
 
 ## Credits
-Special thanks to @AndreaMannoci, @QuadPlex and especially @BJG145 from the [Orba Hacking Forum](https://artiphon.freshdesk.com/support/discussions/topics/44001013185)
+Special thanks to @BJG145 from the [Orba Hacking Forum](https://artiphon.freshdesk.com/support/discussions/topics/44001013185)

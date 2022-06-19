@@ -63,7 +63,7 @@ The script will update the *.orbapreset* file at the specified path and replace 
 
 ## Demo
 
-`COMING SOON`
+https://user-images.githubusercontent.com/3968129/174461267-e6fa73c7-07fe-4922-98ac-c76c3fe31279.mov
 
 ## Credits
 Special thanks to @BJG145 from the [Orba Hacking Forum](https://artiphon.freshdesk.com/support/discussions/topics/44001013185)

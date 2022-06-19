@@ -425,6 +425,7 @@ file_upload.onchange = function(e) {
     reader.onload = function(event) {
 	    currentFile.textContent = file.name;
 	    uploadContent = event.target.result;
+	    parseOrbaPresetFile(uploadContent);
     };
     reader.readAsText(file);
     document.getElementById('file_download').value = file.name;

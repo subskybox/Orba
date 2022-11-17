@@ -1,9 +1,9 @@
 # Orba Tools
 
 ## What is an Orba?
-Orba is a musical instrument designed for your hands. It is a synth, looper and controller that lets you create songs with intuitive gestures like tapping, sliding, and waving.
+Orba is a musical instrument designed for your hands. It is a synth, looper, and controller that lets you create songs with intuitive gestures like tapping, sliding, and waving.
 Orba is made by [Artiphon](https://artiphon.com/pages/orba-by-artiphon).
-Orba software is avaible in the [Downloads](https://artiphon.com/pages/downloads) section of their website but is known to be fairly feature limited compared to what their customers would like see. For this reason, I am sharing a few Orba Utilities I have built.
+Orba software is available in the [Downloads](https://artiphon.com/pages/downloads) section of their website but is known to be fairly feature-limited compared to what their customers would like to see. For this reason, I am sharing a few Orba Utilities I have built.
 
 ## What Utilities have I built?
 This repository contains several Orba Utilities to help you perform advanced changes to your Orba. These utilities help you to edit Preset voicings (i.e. apply custom chords and scales that are transposable). Some of these utilities have been moved to the `archived` folder as the tools have been combined/simplified. As I'm learning more about how the Orba and .orbapreset files correspond, I may modify the structure further.

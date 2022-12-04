@@ -1,10 +1,19 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 
 import unittest
 from orba_sample_set_generator import SampleSet
 
-# filename format is as follows:
-#   namePart1<_namePart2_namePartn>_Note<_Velocity><_startLoop><_uuid>.wav
+"""
+Filename format is as follows:
+ NamePart1<_namePart2_namePartn>_Note<_Velocity><_LoopStart><_LoopEnd><_UUID>.wav
+      Name: Can be any name and contains underscores if desired  
+      Note: Must be an uppercase A-G character followed by a #|b (sharp|flat) symbol followed by an octave # (e.g. A#3)
+  Velocity: Can be an integer from 0-127 or a music dynamic string from {ppp, pp, p, mp, mf, f, ff, fff}
+ LoopStart: Any integer which represents the sample # of where the loop starts. Can be obtained from Audacity
+   LoopEnd: Any integer which represents the sample # of where the loop ends. Can be obtained from Audacity
+      UUID: Any legal UUID. Must be 32 characters mixed of [0-9] and [a-f]
+"""
+
 
 class SampleSetTests(unittest.TestCase):
 

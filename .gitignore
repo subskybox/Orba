@@ -2,3 +2,4 @@
 __pycache__/
 _trial_temp/
 .idea/
+venv/

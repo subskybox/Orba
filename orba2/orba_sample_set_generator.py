@@ -141,7 +141,7 @@ class SampleSet:
 
 def main(args):
     files = os.listdir(args.samplePath)
-    subdirectory = os.path.basename(args.samplePath)
+    subdirectory = os.path.basename(os.path.abspath(args.samplePath))
     sorted_sample_sets = sorted([(SampleSet(f)) for f in files], key=lambda x: (x.midi_note, x.velocity))
 
     # Inject the indexes and subdirectory info
@@ -176,7 +176,7 @@ def parse_arguments():
     parser.add_argument('samplePath', help='AbsolutePath to the samples folder.', type=str)
 
     # Optional arguments
-    parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
+    # parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
 
     # Print version
     parser.add_argument('--version', action='version', version='%(prog)s - Version 0.91')

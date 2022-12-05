@@ -2,7 +2,6 @@
 
 import os
 import re
-import numpy
 import argparse
 from itertools import groupby
 from operator import attrgetter
@@ -150,12 +149,14 @@ def main(args):
         ss.subdirectory = subdirectory
 
     # Setup Lists based on the collection of sample sets
-    note_thresholds = ','.join([*set([str(ss.midi_note) for ss in sorted_sample_sets][:-1])])
     grouped_by_notes = [list(g) for _, g in groupby(sorted_sample_sets, attrgetter('midi_note'))]
-    sample_velocities = [numpy.array([i.velocity for i in j]) for j in grouped_by_notes]
-    vt = [numpy.floor(0.5*(k[1:] + k[:-1])).astype(int).tolist() for k in sample_velocities]
-    velocity_thresholds = str(vt)[1:-1].replace(" ", "").replace("],[", "][")
+    sv = [[i.velocity for i in j] for j in grouped_by_notes]
+    vt = [list([int(i * 0.5) for i in map(sum, zip(*t))]) for t in zip([x[1:] for x in sv], [x[:-1] for x in sv])]
     sm = [[i.sample_index for i in j] for j in grouped_by_notes]
+
+    # Format Output strings
+    note_thresholds = ','.join([*set([str(ss.midi_note) for ss in sorted_sample_sets][:-1])])
+    velocity_thresholds = str(vt)[1:-1].replace(" ", "").replace("],[", "][")
     sample_map = str(sm)[1:-1].replace(" ", "").replace("],[", "][")
     template = """<SampleSet name="{Name}" noteThresholds="{NT}"
            velocityThresholds="{VT}" sampleMap="{SM}">"""

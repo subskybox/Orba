@@ -61,3 +61,6 @@ Filename format is as follows:
 1. The script will allow you to add a flag to manage the creation or updating of UUIDs.
 2. The script will allow you to supply the path to a *.artipreset* file and will make the replacement for you.
 
+### DEMO:
+
+https://user-images.githubusercontent.com/3968129/205837341-8818b2da-2b9b-4599-a261-ddabd6a2a5f6.mov

@@ -41,7 +41,7 @@ C:\Users\Public\Documents\Artiphon\Common\Presets\
 ```
 **Mac:**
 ```
-/Users/shared/Artiphon/Orba/Common/Presets/
+/Users/shared/Artiphon/Common/Presets/
 ```
 
 ### NOMENCLATURE:
@@ -58,6 +58,6 @@ Filename format is as follows:
 >**PRO TIP**: Sample #s can be obtained from audio editing software such as [Audacity](https://www.audacityteam.org).
 
 ### FUTURE PLANS:
-1. The script will allow you to supply the path to a *.artipreset* file and will make the replacement for you.
-2. The script will allow you to add a flag to manage the creation or updating of UUIDs.
+1. The script will allow you to add a flag to manage the creation or updating of UUIDs.
+2. The script will allow you to supply the path to a *.artipreset* file and will make the replacement for you.
 

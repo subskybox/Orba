@@ -110,9 +110,8 @@ class SampleSet:
     @property
     def midi_note(self):
         if not self._note == '':
-            return 12 * (int(self._note[-1])+1) + [x for x, y in enumerate(SampleSet.MUSIC_NOTES)
-                                                   if y[0] == self._note[:-1] or y[1] == self._note[:-1]][0]
-
+            return 12 * (int(self._note[-1])+1) + [idx for idx, n in enumerate(SampleSet.MUSIC_NOTES)
+                                                   if self._note[:-1] in n][0]
     @property
     def pitch(self):
         if self.midi_note:
@@ -150,9 +149,9 @@ def main(args):
 
     # Setup Lists based on the collection of sample sets
     grouped_by_notes = [list(g) for _, g in groupby(sorted_sample_sets, attrgetter('midi_note'))]
+    sm = [[i.sample_index for i in j] for j in grouped_by_notes]
     sv = [[i.velocity for i in j] for j in grouped_by_notes]
     vt = [list([int(i * 0.5) for i in map(sum, zip(*t))]) for t in zip([x[1:] for x in sv], [x[:-1] for x in sv])]
-    sm = [[i.sample_index for i in j] for j in grouped_by_notes]
 
     # Format Output strings
     note_thresholds = ','.join([*set([str(ss.midi_note) for ss in sorted_sample_sets][:-1])])

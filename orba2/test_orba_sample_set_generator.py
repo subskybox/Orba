@@ -85,7 +85,18 @@ class SampleSetTests(unittest.TestCase):
         self.assertEqual("00c78732cd31bef755f6bfbf410bcae2", self.ss.uuid)
 
     def test_music_dynamic_to_velocity(self):
-        self.ss = SampleSet('freepats_hang_Bb3_zf_1000_2000_00c78732cd31bef755f6bfbf410bcae2.wav')
+        self.ss = SampleSet('freepats_hang_Bb3_ff_1000_2000_00c78732cd31bef755f6bfbf410bcae2.wav')
+        self.assertEqual('freepats_hang', self.ss.name)
+        self.assertEqual('Bb3', self.ss.note)
+        self.assertEqual(112, self.ss.velocity)
+        self.assertEqual(58, self.ss.midi_note)
+        self.assertEqual(233.08188075904496, self.ss.pitch)
+        self.assertEqual(1000, self.ss.loop_start)
+        self.assertEqual(2000, self.ss.loop_end)
+        self.assertEqual("00c78732cd31bef755f6bfbf410bcae2", self.ss.uuid)
+
+    def test_velocity_parse_error_yields_default(self):
+        self.ss = SampleSet('freepats_hang_Bb3_zz_1000_2000_00c78732cd31bef755f6bfbf410bcae2.wav')
         self.assertEqual('freepats_hang', self.ss.name)
         self.assertEqual('Bb3', self.ss.note)
         self.assertEqual(80, self.ss.velocity)

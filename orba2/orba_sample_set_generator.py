@@ -11,13 +11,12 @@ class SampleSet:
     MUSIC_NOTES = [('C', ''), ('C#', 'Db'), ('D', ''), ('D#', 'Eb'), ('E', 'Fb'), ('E#', 'F'), ('F#', 'Gb'),
                    ('G', ''), ('G#', 'Ab'), ('A', ''), ('A#', 'Bb'), ('B', ''), ('B#', '')]
     DYNAMIC_TO_VELOCITY = {'ppp': 16, 'pp': 33, 'p': 49, 'mp': 64, 'mf': 80, 'f': 96, 'ff': 112, 'fff': 127}
-    DEFAULT_VELOCITY = 80
 
     def __init__(self, fn):
         self._filename = fn
         self._name = ''
         self._note = ''
-        self._velocity = self.DEFAULT_VELOCITY
+        self._velocity = 80
         self._loop_start = 0
         self._loop_end = 0
         self._uuid = None
@@ -26,6 +25,7 @@ class SampleSet:
         self._subdirectory = None
 
         note_pattern = re.compile('^[A-G][#|b]?[0-9]')
+        uuid_pattern = re.compile('^[a-f0-9]{32}')
         tokens = fn.split('_')
 
         for idx, x in enumerate(tokens):
@@ -38,9 +38,8 @@ class SampleSet:
         if self._name.endswith("_"):
             self._name = self.name[:-5]
             return
-
-        self._note = tokens[idx]
-        uuid_pattern = re.compile('^[a-f0-9]{32}')
+        else:
+            self._note = tokens[idx]
 
         if not tokens[idx + 1].endswith('.wav'):
             self._velocity = self.parse_velocity(tokens[idx + 1])
@@ -115,7 +114,7 @@ class SampleSet:
     @property
     def pitch(self):
         if self.midi_note:
-            return pow(2, (self.midi_note-69)/12) * 440.0
+            return 440.0 * pow(2, (self.midi_note-69)/12)
 
     def parse_velocity(self, v):
         try:
@@ -125,7 +124,7 @@ class SampleSet:
         try:
             return self.DYNAMIC_TO_VELOCITY[v]
         except KeyError:
-            return self.DEFAULT_VELOCITY
+            return self._velocity
 
     def __repr__(self):
         template = """  <SampledSound sampleIndex="{Index}" name="{Name}" loopStart="{LoopStart}" loopEnd="{LoopEnd}"
@@ -179,7 +178,7 @@ def parse_arguments():
     # parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
 
     # Print version
-    parser.add_argument('--version', action='version', version='%(prog)s - Version 0.91')
+    parser.add_argument('--version', action='version', version='%(prog)s - Version 0.92')
 
     # Parse arguments
     args = parser.parse_args()

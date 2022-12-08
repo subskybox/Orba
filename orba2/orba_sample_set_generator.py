@@ -14,6 +14,8 @@ class SampleSet:
 
     def __init__(self, fn):
         self._filename = fn
+
+        # Establish Defaults
         self._name = ''
         self._note = ''
         self._velocity = 80
@@ -28,6 +30,7 @@ class SampleSet:
         uuid_pattern = re.compile('^[a-f0-9]{32}')
         tokens = fn.split('_')
 
+        # Build the name token
         for idx, x in enumerate(tokens):
             if not note_pattern.match(x):
                 self._name += (x + "_")
@@ -35,12 +38,16 @@ class SampleSet:
                 self._name = self._name[:-1]
                 break
 
-        if self._name.endswith("_"):
-            self._name = self.name[:-5]
+        # If Note was not supplied, return a default SampleSet
+        if self._name.endswith(".wav_"):
+            self._name = self._name[:-5]
             return
         else:
-            self._note = tokens[idx]
+            self._note = tokens[idx].split('.wav')[0]
+            if (idx + 1 == len(tokens)):
+                return
 
+        # Parse the rest of the tokens
         if not tokens[idx + 1].endswith('.wav'):
             self._velocity = self.parse_velocity(tokens[idx + 1])
             if not tokens[idx+2].endswith('.wav'):
@@ -153,7 +160,7 @@ def main(args):
     vt = [list([int(i * 0.5) for i in map(sum, zip(*t))]) for t in zip([x[1:] for x in sv], [x[:-1] for x in sv])]
 
     # Format Output strings
-    note_thresholds = ','.join([*set([str(ss.midi_note) for ss in sorted_sample_sets][:-1])])
+    note_thresholds = ','.join([str(ss.midi_note) for ss in sorted_sample_sets][:-1])
     velocity_thresholds = str(vt)[1:-1].replace(" ", "").replace("],[", "][")
     sample_map = str(sm)[1:-1].replace(" ", "").replace("],[", "][")
     template = """<SampleSet name="{Name}" noteThresholds="{NT}"

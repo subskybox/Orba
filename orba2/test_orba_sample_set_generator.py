@@ -6,7 +6,7 @@ from orba_sample_set_generator import SampleSet
 """
 Filename format is as follows:
  NamePart1<_namePart2_namePartn>_Note<_Velocity><_LoopStart><_LoopEnd><_UUID>.wav
-      Name: Can be any name and contains underscores if desired  
+      Name: Can be any name and contain underscores if desired  
       Note: Must be an uppercase A-G character followed by a #|b (sharp|flat) symbol followed by an octave # (e.g. A#3)
   Velocity: Can be an integer from 0-127 or a music dynamic string from {ppp, pp, p, mp, mf, f, ff, fff}
  LoopStart: Any integer which represents the sample # of where the loop starts. Can be obtained from Audacity
@@ -28,11 +28,22 @@ class SampleSetTests(unittest.TestCase):
         self.assertEqual(0, self.ss.loop_end)
         self.assertEqual(None, self.ss.uuid)
 
+    def test_name_note_only(self):
+        self.ss = SampleSet('name_Bb4.wav')
+        self.assertEqual('name', self.ss.name)
+        self.assertEqual('Bb4', self.ss.note)
+        self.assertEqual(80, self.ss.velocity)
+        self.assertEqual(70, self.ss.midi_note)
+        self.assertEqual(466.1637615180899, self.ss.pitch)
+        self.assertEqual(0, self.ss.loop_start)
+        self.assertEqual(0, self.ss.loop_end)
+        self.assertEqual(None, self.ss.uuid)
+
     def test_name_note_velocity_only(self):
-        self.ss = SampleSet('name_C#1_80.wav')
+        self.ss = SampleSet('name_C#1_88.wav')
         self.assertEqual('name', self.ss.name)
         self.assertEqual('C#1', self.ss.note)
-        self.assertEqual(80, self.ss.velocity)
+        self.assertEqual(88, self.ss.velocity)
         self.assertEqual(25, self.ss.midi_note)
         self.assertEqual(34.64782887210901, self.ss.pitch)
         self.assertEqual(0, self.ss.loop_start)

@@ -15,7 +15,7 @@ class SampleSet:
     def __init__(self, fn):
         self._filename = fn
 
-        # Establish Defaults
+        # Establish defaults
         self._name = ''
         self._note = ''
         self._velocity = 80
@@ -30,7 +30,7 @@ class SampleSet:
         uuid_pattern = re.compile('^[a-f0-9]{32}')
         tokens = fn.split('_')
 
-        # Build the name token
+        # Build the name property
         for idx, x in enumerate(tokens):
             if not note_pattern.match(x):
                 self._name += (x + "_")

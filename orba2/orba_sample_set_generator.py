@@ -2,6 +2,7 @@
 
 import os
 import re
+import hashlib
 import argparse
 from itertools import groupby
 from operator import attrgetter
@@ -73,6 +74,10 @@ class SampleSet:
     def filename(self):
         return self._filename
 
+    @filename.setter
+    def filename(self, f):
+        self._filename = f
+
     @property
     def name(self):
         return self._name
@@ -96,6 +101,9 @@ class SampleSet:
     @property
     def uuid(self):
         return self._uuid
+    @uuid.setter
+    def uuid(self, u):
+        self._uuid = u
 
     @property
     def sample_index(self):
@@ -148,10 +156,18 @@ def main(args):
     subdirectory = os.path.basename(os.path.abspath(args.samplePath))
     sorted_sample_sets = sorted([(SampleSet(f)) for f in files], key=lambda x: (x.midi_note, x.velocity))
 
-    # Inject the indexes and subdirectory info
+    # Inject the indexes and subdirectory. If the -u flag is present, update/add the uuid
     for idx, ss in enumerate(sorted_sample_sets):
         ss.sample_index = idx
         ss.subdirectory = subdirectory
+        if(args.u):
+            # Update|Add uuid, update filename property and rename files
+            file = os.path.abspath(args.samplePath) + '/' + ss.filename
+            with open(file, 'rb') as file_to_check:
+                left_of_uuid = ss.filename[:-4] if ss.uuid == None else ss.filename[:-37]
+                ss.uuid = hashlib.md5(file_to_check.read()).hexdigest()
+                ss.filename = left_of_uuid + '_' + ss.uuid + '.wav'
+                os.rename(file, os.path.abspath(args.samplePath) + '/' + ss.filename)
 
     # Setup Lists based on the collection of sample sets
     grouped_by_notes = [list(g) for _, g in groupby(sorted_sample_sets, attrgetter('midi_note'))]
@@ -159,7 +175,7 @@ def main(args):
     sv = [[i.velocity for i in j] for j in grouped_by_notes]
     vt = [list([int(i * 0.5) for i in map(sum, zip(*t))]) for t in zip([x[1:] for x in sv], [x[:-1] for x in sv])]
 
-    # Format Output strings
+    # Format output strings
     note_thresholds = ','.join([str(ss.midi_note) for ss in sorted_sample_sets][:-1])
     velocity_thresholds = str(vt)[1:-1].replace(" ", "").replace("],[", "][")
     sample_map = str(sm)[1:-1].replace(" ", "").replace("],[", "][")
@@ -182,7 +198,7 @@ def parse_arguments():
     parser.add_argument('samplePath', help='AbsolutePath to the samples folder.', type=str)
 
     # Optional arguments
-    # parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
+    parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
 
     # Print version
     parser.add_argument('--version', action='version', version='%(prog)s - Version 0.92')

@@ -46,8 +46,10 @@ C:\Users\Public\Documents\Artiphon\Common\Presets\
 
 ### NOMENCLATURE:
 ```
-Filename format is as follows:
+Filename format for .wav files is as follows (< > denotes optional):
+
  NamePart1<_namePart2_namePartn>_Note<_Velocity><_LoopStart><_LoopEnd><_UUID>.wav
+
       Name: Can be any name and contains underscores if desired  
       Note: [A-G] character followed by a #|b (sharp|flat) followed by an octave # (e.g. A#3)
   Velocity: An integer from 0-127 or a music dynamic string from {ppp, pp, p, mp, mf, f, ff, fff}
@@ -58,8 +60,7 @@ Filename format is as follows:
 >**PRO TIP**: Sample #s can be obtained from audio editing software such as [Audacity](https://www.audacityteam.org).
 
 ### FUTURE PLANS:
-1. The script will allow you to add a flag to manage the creation or updating of UUIDs.
-2. The script will allow you to supply the path to a *.artipreset* file and will make the replacement for you.
+1. The script will allow you to supply the path to a *.artipreset* file and will make the replacement for you.
 
 ### DEMO:
 

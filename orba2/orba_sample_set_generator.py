@@ -2,172 +2,35 @@
 
 import os
 import re
+import glob
 import hashlib
 import argparse
+from shutil import rmtree
+from shutil import copyfile
 from itertools import groupby
 from operator import attrgetter
-
-
-class SampleSet:
-    MUSIC_NOTES = [('C', ''), ('C#', 'Db'), ('D', ''), ('D#', 'Eb'), ('E', 'Fb'), ('E#', 'F'), ('F#', 'Gb'),
-                   ('G', ''), ('G#', 'Ab'), ('A', ''), ('A#', 'Bb'), ('B', ''), ('B#', '')]
-    DYNAMIC_TO_VELOCITY = {'ppp': 16, 'pp': 33, 'p': 49, 'mp': 64, 'mf': 80, 'f': 96, 'ff': 112, 'fff': 127}
-
-    def __init__(self, fn):
-        self._filename = fn
-
-        # Establish defaults
-        self._name = ''
-        self._note = ''
-        self._velocity = 80
-        self._loop_start = 0
-        self._loop_end = 0
-        self._uuid = None
-        self._midi_note = None
-        self._sample_index = None
-        self._subdirectory = None
-
-        note_pattern = re.compile('^[A-G][#|b]?[0-9]')
-        uuid_pattern = re.compile('^[a-f0-9]{32}')
-        tokens = fn.split('_')
-
-        # Build the name property
-        for idx, x in enumerate(tokens):
-            if not note_pattern.match(x):
-                self._name += (x + "_")
-            else:
-                self._name = self._name[:-1]
-                break
-
-        # If Note was not supplied, return a default SampleSet
-        if self._name.endswith(".wav_"):
-            self._name = self._name[:-5]
-            return
-        else:
-            self._note = tokens[idx].split('.wav')[0]
-            if (idx + 1 == len(tokens)):
-                return
-
-        # Parse the rest of the tokens
-        if not tokens[idx + 1].endswith('.wav'):
-            self._velocity = self.parse_velocity(tokens[idx + 1])
-            if not tokens[idx+2].endswith('.wav'):
-                self._loop_start = int(tokens[idx + 2])
-                if not tokens[idx+3].endswith('.wav'):
-                    self._loop_end = int(tokens[idx + 3])
-                    if uuid_pattern.match(tokens[idx + 4]):
-                        self._uuid = tokens[idx + 4][:-4]
-                else:
-                    if uuid_pattern.match(tokens[idx + 3]):
-                        self._uuid = tokens[idx + 3][:-4]
-                    else:
-                        self._loop_end = int(tokens[idx + 3][:-4])
-            else:
-                if uuid_pattern.match(tokens[idx + 2]):
-                    self._uuid = tokens[idx + 2][:-4]
-                else:
-                    self._loop_start = int(tokens[idx + 2][:-4])
-        else:
-            self._velocity = self.parse_velocity(tokens[idx + 1][:-4])
-
-    @property
-    def filename(self):
-        return self._filename
-
-    @filename.setter
-    def filename(self, f):
-        self._filename = f
-
-    @property
-    def name(self):
-        return self._name
-
-    @property
-    def note(self):
-        return self._note
-
-    @property
-    def velocity(self):
-        return self._velocity
-
-    @property
-    def loop_start(self):
-        return self._loop_start
-
-    @property
-    def loop_end(self):
-        return self._loop_end
-
-    @property
-    def uuid(self):
-        return self._uuid
-    @uuid.setter
-    def uuid(self, u):
-        self._uuid = u
-
-    @property
-    def sample_index(self):
-        return self._sample_index
-
-    @sample_index.setter
-    def sample_index(self, i):
-        self._sample_index = i
-
-    @property
-    def subdirectory(self):
-        return self._subdirectory
-
-    @subdirectory.setter
-    def subdirectory(self, sd):
-        self._subdirectory = sd
-
-    @property
-    def midi_note(self):
-        if not self._note == '':
-            return 12 * (int(self._note[-1])+1) + [idx for idx, n in enumerate(SampleSet.MUSIC_NOTES)
-                                                   if self._note[:-1] in n][0]
-    @property
-    def pitch(self):
-        if self.midi_note:
-            return 440.0 * pow(2, (self.midi_note-69)/12)
-
-    def parse_velocity(self, v):
-        try:
-            return int(v)
-        except ValueError:
-            pass
-        try:
-            return self.DYNAMIC_TO_VELOCITY[v]
-        except KeyError:
-            return self._velocity
-
-    def __repr__(self):
-        template = """  <SampledSound sampleIndex="{Index}" name="{Name}" loopStart="{LoopStart}" loopEnd="{LoopEnd}"
-                pitch="{Pitch}" fileName="{Filename}"
-                subdirectory="{Subdirectory}" pool="User"/>"""
-
-        return template.format(Index=self.sample_index, Name=self.name,
-                               LoopStart=self.loop_start, LoopEnd=self.loop_end,
-                               Pitch=self.pitch, Filename=self.filename, Subdirectory=self.subdirectory)
-
+from collections import OrderedDict
+from classes.artipreset import SampleSet
 
 def main(args):
-    files = os.listdir(args.samplePath)
-    subdirectory = os.path.basename(os.path.abspath(args.samplePath))
+    # Collect relevant collections
+    files = [os.path.basename(x) for x in glob.glob(os.path.abspath(args.samplePath) + '/*.wav')]
     sorted_sample_sets = sorted([(SampleSet(f)) for f in files], key=lambda x: (x.midi_note, x.velocity))
+    subdirectory = os.path.basename(os.path.abspath(args.samplePath))
+    sample_set_name = subdirectory
 
-    # Inject the indexes and subdirectory. If the -u flag is present, update/add the uuid
+    if (args.artipreset):
+        subdirectory += '_' + hashlib.md5(subdirectory.encode('utf-8')).hexdigest()
+
+    # Inject the indexes and subdirectory.
     for idx, ss in enumerate(sorted_sample_sets):
         ss.sample_index = idx
         ss.subdirectory = subdirectory
-        if(args.u):
-            # Update|Add uuid, update filename property and rename files
+        # If the -a flag is present, add the uuid
+        if(args.artipreset):
             file = os.path.abspath(args.samplePath) + '/' + ss.filename
             with open(file, 'rb') as file_to_check:
-                left_of_uuid = ss.filename[:-4] if ss.uuid == None else ss.filename[:-37]
                 ss.uuid = hashlib.md5(file_to_check.read()).hexdigest()
-                ss.filename = left_of_uuid + '_' + ss.uuid + '.wav'
-                os.rename(file, os.path.abspath(args.samplePath) + '/' + ss.filename)
 
     # Setup Lists based on the collection of sample sets
     grouped_by_notes = [list(g) for _, g in groupby(sorted_sample_sets, attrgetter('midi_note'))]
@@ -176,29 +39,71 @@ def main(args):
     vt = [list([int(i * 0.5) for i in map(sum, zip(*t))]) for t in zip([x[1:] for x in sv], [x[:-1] for x in sv])]
 
     # Format output strings
-    note_thresholds = ','.join([str(ss.midi_note) for ss in sorted_sample_sets][:-1])
+    template = """    <SampleSet name="{Name}" noteThresholds="{NT}"
+               velocityThresholds="{VT}" sampleMap="{SM}">"""
+    note_thresholds = ','.join(list(OrderedDict.fromkeys([str(ss.midi_note) for ss in sorted_sample_sets]))[:-1])
     velocity_thresholds = str(vt)[1:-1].replace(" ", "").replace("],[", "][")
     sample_map = str(sm)[1:-1].replace(" ", "").replace("],[", "][")
-    template = """<SampleSet name="{Name}" noteThresholds="{NT}"
-           velocityThresholds="{VT}" sampleMap="{SM}">"""
+    sample_set_node = template.format(Name=sample_set_name, NT=note_thresholds, VT=velocity_thresholds, SM=sample_map)
+    sample_set_node += '\n' + '\n'.join(map(str, sorted_sample_sets))
+    sample_set_node += '\n' + '    </SampleSet>'
 
     # Print out the SampleSet node
-    print(template.format(Name=subdirectory, NT=note_thresholds, VT=velocity_thresholds, SM=sample_map))
-    print(*sorted_sample_sets, sep='\n')
-    print("</SampleSet>")
+    print(sample_set_node)
 
+    if (args.artipreset):
+        rmtree(os.path.abspath(args.samplePath) + '/Common', ignore_errors=True)
+
+        with open(args.artipreset, 'r') as f:
+            content = f.read()
+
+        # Substitute the new information into the new .artipreset file
+        arti_folder = '/Common/Presets/' + os.path.basename(os.path.abspath(os.path.dirname(args.artipreset)))
+        artipreset_uuid = hashlib.md5((arti_folder + sample_set_name).encode('utf-8')).hexdigest()
+        png_filename = os.path.basename(glob.glob(os.path.abspath(args.samplePath) + '/*.png')[0])
+        img_uuid = hashlib.md5(png_filename.encode('utf-8')).hexdigest()
+        img_filename = png_filename[:-4] + '_' + img_uuid + '.png'
+        sample_set_name += '_' + artipreset_uuid
+        content_sub1 = re.sub('(uuid=".*?")', 'uuid="' + artipreset_uuid + '"', content)
+        content_sub2 = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + img_filename + '"', content_sub1)
+        content_sub3 = re.sub('(    <SampleSet.*</SampleSet>)', sample_set_node, content_sub2, flags=re.DOTALL)
+        os.makedirs(os.path.abspath(args.samplePath) + arti_folder, mode=0o777, exist_ok=True)
+
+        with open(os.path.abspath(args.samplePath) + arti_folder + '/' + sample_set_name + '.artipreset', 'w') as f:
+            f.write(content_sub3)
+
+        # Create a SamplePools folder and appropriate subfolders
+        wav_folder = '/Common/SamplePools/User/' + subdirectory
+        os.makedirs(os.path.abspath(args.samplePath) + wav_folder, mode=0o777, exist_ok=True)
+
+        #Copy the .wav files with their uuids appended into the new folder
+        for ss in sorted_sample_sets:
+            copyfile(os.path.join(os.path.abspath(args.samplePath), ss.filename[:-37] + '.wav'),
+                     os.path.join(os.path.abspath(args.samplePath) + wav_folder, ss.filename))
+
+        # Create an images folder and copy in png file with uuid
+        img_folder = '/Common/Images/'
+        os.makedirs(os.path.abspath(args.samplePath) + img_folder, mode=0o777, exist_ok=True)
+        copyfile(os.path.join(os.path.abspath(args.samplePath), png_filename),
+                 os.path.join(os.path.abspath(args.samplePath) + img_folder, img_filename))
     return
 
+def files_only(path):
+    for file in os.listdir(path):
+        if os.path.isfile(os.path.join(path, file)):
+            yield file
 
 def parse_arguments():
     # Create argument parser
     parser = argparse.ArgumentParser()
 
     # Positional mandatory arguments
-    parser.add_argument('samplePath', help='AbsolutePath to the samples folder.', type=str)
+    parser.add_argument('samplePath', help='Path to the samples folder.', type=str)
 
     # Optional arguments
-    parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
+    # parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
+    parser.add_argument('-a', '--artipreset', nargs='?', const='arg_was_not_given',
+                        help='Path to an .artipreset file to use as starting template')
 
     # Print version
     parser.add_argument('--version', action='version', version='%(prog)s - Version 0.92')

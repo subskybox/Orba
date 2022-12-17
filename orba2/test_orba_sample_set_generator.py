@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 import unittest
-from orba_sample_set_generator import SampleSet
-
+from classes.artipreset import SampleSet
 """
 Filename format is as follows:
  NamePart1<_namePart2_namePartn>_Note<_Velocity><_LoopStart><_LoopEnd><_UUID>.wav

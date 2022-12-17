@@ -26,12 +26,13 @@ Then run the script with the following command:
 
 **PC or Mac:**
 ```
-python orba_sample_set_generator.py [path_to_wav_folder]
+python orba_sample_set_generator.py [-h] [-a [ARTIPRESET]] [--version] *samplePath*
 ```
+This will output the ```<SampleSet>``` node which can be replaced into an *.artipreset* file. The best approach is to add the `-a` flag and supply the path to an existing *.artipreset* file. This will create a `Common` folder in the *samplePath* with all the files & folders required to add the new Preset to the Orba 2 App.
 
->**PRO TIP**: You can *Drag & Drop* your folder from the *File Explorer* or *Finder* directly to the Terminal window rather than typing [path_to_wav_folder].
+>**PRO TIP**: You can *Drag & Drop* your folder from the *File Explorer* or *Finder* directly to the Terminal window rather than typing *samplePath*.
 
-This will output the ```<SampleSet>``` node which can be replaced into a *.artipreset* file. The best approach is to make a copy of a factory *.artipreset* file and rename it *Your_new_preset_name.artipreset*. After this, using a text editor, replace the ```<SampleSet>``` node with the one generated from the script.
+>**PRO TIP**: If a .png image file is found in the *samplePath*, it will be added to the `Common` folder when using `-a`
 
 The factory *.artipreset* files can be found here:
 
@@ -48,19 +49,20 @@ C:\Users\Public\Documents\Artiphon\Common\Presets\
 ```
 Filename format for .wav files is as follows (< > denotes optional):
 
- NamePart1<_namePart2_namePartn>_Note<_Velocity><_LoopStart><_LoopEnd><_UUID>.wav
+ NamePart1<_namePart2_namePartn>_Note<_Velocity><_LoopStart><_LoopEnd>.wav
 
-      Name: Can be any name and contains underscores if desired  
-      Note: [A-G] character followed by a #|b (sharp|flat) followed by an octave # (e.g. A#3)
+      Name: Can be any name and contain underscores if desired  
+      Note: [A-G] character, optionally followed by a #|b (sharp|flat), followed by an octave # (e.g. A#3)
   Velocity: An integer from 0-127 or a music dynamic string from {ppp, pp, p, mp, mf, f, ff, fff}
  LoopStart: Any integer which represents the sample # of where the loop starts
    LoopEnd: Any integer which represents the sample # of where the loop ends
-      UUID: Any legal UUID. Must be 32 characters mixed of [0-9] and [a-f]
 ```
 >**PRO TIP**: Sample #s can be obtained from audio editing software such as [Audacity](https://www.audacityteam.org).
 
 ### FUTURE PLANS:
-1. The script will allow you to supply the path to a *.artipreset* file and will make the replacement for you.
+1. Add a flag to deploy the newly created Preset to the Orba 2 App and/or Orba 2 directly.
+2. Add a flag to zip the `Common` folder contents enabling the sharing of Presets with other Artiphon enthusiasts.
+3. Add an example folder.
 
 ### DEMO:
 

@@ -68,23 +68,34 @@ def main(args):
 
         # Substitute the new information into the .artipreset content
         artipreset_uuid = hashlib.md5((arti_folder + sample_set_name).encode('utf-8')).hexdigest()
-        png_filename = os.path.basename(glob.glob(os.path.abspath(args.samplePath) + '/*.png')[0])
-        img_uuid = hashlib.md5(png_filename.encode('utf-8')).hexdigest()
-        img_filename = png_filename[:-4] + '_' + img_uuid + '.png'
+        content = re.sub('(PresetEntry name=".*?")', 'PresetEntry name="' + sample_set_name + '"', content)
+        content = re.sub('(SoundPreset name=".*?")', 'SoundPreset name="' + sample_set_name + '"', content)
+        content = re.sub('(readOnly=".*?")', 'readOnly="0"', content)
+        content = re.sub('(factory=".*?")', 'factory="0"', content)
+        content = re.sub('(uuid=".*?")', 'uuid="' + artipreset_uuid + '"', content)
+        content = re.sub('(    <SampleSet.*</SampleSet>)', sample_set_node, content, flags=re.DOTALL)
         sample_set_name += '_' + artipreset_uuid
-        content_sub1 = re.sub('(uuid=".*?")', 'uuid="' + artipreset_uuid + '"', content)
-        content_sub2 = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + img_filename + '"', content_sub1)
-        content_sub3 = re.sub('(    <SampleSet.*</SampleSet>)', sample_set_node, content_sub2, flags=re.DOTALL)
+
+        # Check if a png file is present
+        png_files = glob.glob(os.path.abspath(args.samplePath) + '/*.png')
+        png_filename = os.path.basename(png_files[0]) if len(png_files) > 0 else None
+
+        # Make all adjustments needed if a .png image has been supplied
+        if png_filename:
+            img_uuid = hashlib.md5(png_filename.encode('utf-8')).hexdigest()
+            img_filename = png_filename[:-4] + '_' + img_uuid + '.png'
+            content = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + img_filename + '"', content)
+            img_folder = '/Common/Images/'
+            os.makedirs(os.path.abspath(args.samplePath) + img_folder, mode=0o777, exist_ok=True)
+            copyfile(os.path.join(os.path.abspath(args.samplePath), png_filename),
+                     os.path.join(os.path.abspath(args.samplePath) + img_folder, img_filename))
+        else:
+            default_img = 'User_16b5545b4f1b42379c14815d73209225.png'
+            content = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + default_img + '"', content)
 
         # Write the altered content back to the new .artipreset file
         with open(os.path.abspath(args.samplePath) + arti_folder + '/' + sample_set_name + '.artipreset', 'w') as f:
-            f.write(content_sub3)
-
-        # Create an 'Images' folder and copy in png file with uuid
-        img_folder = '/Common/Images/'
-        os.makedirs(os.path.abspath(args.samplePath) + img_folder, mode=0o777, exist_ok=True)
-        copyfile(os.path.join(os.path.abspath(args.samplePath), png_filename),
-                 os.path.join(os.path.abspath(args.samplePath) + img_folder, img_filename))
+            f.write(content)
 
         # Create a 'SamplePools' folder and appropriate subfolders
         wav_folder = '/Common/SamplePools/User/' + subdirectory

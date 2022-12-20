@@ -7,10 +7,10 @@ This repository contains Orba 2 Utilities to help you perform advanced changes t
 >> A Python based script for generating a new Orba 2 Preset from a collection of .wav files
 
 ## Orba 2 SampleSet Generator
-The Orba 2 SampleSet Generator takes a folder as an input and outputs the ```<SampleSet>``` node required to be added to a *.artipreset* file. The script supports many options and uses a naming convention similar to many common formats available on the web or from other musical DAW software.
+The Orba 2 SampleSet Generator takes a folder as an input and outputs the ```<SampleSet>``` node required to be added to a *.artipreset* file. The script supports many options (including deployment) and uses a naming convention similar to many common formats available on the web or from other musical DAW software.
 
 ### PREREQUISITES:
-You must have Python 3.2 or greater to run this script. If you don't have Python installed, just Google "Install Python on Mac|PC". The easiest way to do this on Windows is to download Python from the Windows Store. For Mac, you can install directly from [Python.org](https://www.python.org/downloads/macos/) or install it via [Homebrew or MacPorts](https://www.scivision.dev/homebrew-macports-fink/)
+You must have Python 3.8 or greater to run this script. If you don't have Python installed, just Google "Install Python on Mac|PC". The easiest way to do this on Windows is to download Python from the Windows Store. For Mac, you can install directly from [Python.org](https://www.python.org/downloads/macos/) or install it via [Homebrew or MacPorts](https://www.scivision.dev/homebrew-macports-fink/)
 
 ### DOWNLOADING:
 Make sure to be on the `Code` tab and then press the green `Code ▼` button to expand the drop-down. From the drop-down, choose `Download ZIP`. Once the file has completed downloading, unzip it to a suitable folder.
@@ -26,9 +26,21 @@ Then run the script with the following command:
 
 **PC or Mac:**
 ```
-python orba_sample_set_generator.py [-h] [-a [ARTIPRESET]] [--version] *samplePath*
+python orba_sample_set_generator.py [-h] [-d] [-r] [-s] [-a [ARTIPRESET]] [--version] samplePath
+
+positional arguments:
+  samplePath            Path to the samples folder.
+
+options:
+  -h, --help            show this help message and exit
+  -d                    deploy the content to the Artiphon folder and Orba.
+  -r                    remove the content to the Artiphon folder and Orba.
+  -s                    suppress SampleSet node output to screen.
+  -a [ARTIPRESET], --artipreset [ARTIPRESET]
+                        path to an .artipreset file to use as starting template
+  --version             show program's version number and exit
 ```
-This will output the ```<SampleSet>``` node which can be replaced into an *.artipreset* file. The best approach is to add the `-a` flag and supply the path to an existing *.artipreset* file. This will create a `Common` folder in the *samplePath* with all the files & folders required to add the new Preset to the Orba 2 App.
+This will output the ```<SampleSet>``` node which can be replaced into an *.artipreset* file. The best approach is to add the `-a` flag and supply the path to an existing *.artipreset* file. This will create a `Common` folder in the *samplePath* with all the files & folders required to add the new Preset to the Orba 2 App. Once you are happy with the results, you can add the `-d` flag to deploy it.
 
 >**PRO TIP**: You can *Drag & Drop* your folder from the *File Explorer* or *Finder* directly to the Terminal window rather than typing *samplePath*.
 
@@ -60,7 +72,7 @@ Filename format for .wav files is as follows (< > denotes optional):
 >**PRO TIP**: Sample #s can be obtained from audio editing software such as [Audacity](https://www.audacityteam.org).
 
 ### FUTURE PLANS:
-1. Add a flag to deploy the newly created Preset to the Orba 2 App and/or Orba 2 directly.
+1. Improve deploy/remove functions to work with *Windows*. Currently only supports MacOS.
 2. Add a flag to zip the `Common` folder contents enabling the sharing of Presets with other Artiphon enthusiasts.
 3. Add an example folder.
 

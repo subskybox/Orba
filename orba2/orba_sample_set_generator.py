@@ -4,13 +4,16 @@ import os
 import re
 import glob
 import hashlib
+import pathlib
 import argparse
+from shutil import copy
 from shutil import rmtree
-from shutil import copyfile
+from shutil import copytree
 from itertools import groupby
 from operator import attrgetter
 from collections import OrderedDict
 from classes.artipreset import SampleSet
+from classes.orba_utils import connect_to_orba, disconnect_orba
 
 def main(args):
     # Build relevant collections and base names
@@ -18,6 +21,7 @@ def main(args):
     sorted_sample_sets = sorted([(SampleSet(f)) for f in files], key=lambda x: (x.midi_note, x.velocity))
     subdirectory = os.path.basename(os.path.abspath(args.samplePath))
     sample_set_name = subdirectory
+    orba_home = None
 
     # Append a uuid to the sample directory if this flag is set
     if (args.artipreset):
@@ -51,7 +55,8 @@ def main(args):
     sample_set_node += '\n' + '    </SampleSet>'
 
     # Print out the SampleSet node
-    print(sample_set_node)
+    if not args.s:
+        print(sample_set_node)
 
     # Create the Preset files & folder structure if this flag is set
     if (args.artipreset):
@@ -86,15 +91,17 @@ def main(args):
             img_filename = png_filename[:-4] + '_' + img_uuid + '.png'
             content = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + img_filename + '"', content)
             img_folder = '/Common/Images/'
+            img_file = img_folder + img_filename
             os.makedirs(os.path.abspath(args.samplePath) + img_folder, mode=0o777, exist_ok=True)
-            copyfile(os.path.join(os.path.abspath(args.samplePath), png_filename),
+            copy(os.path.join(os.path.abspath(args.samplePath), png_filename),
                      os.path.join(os.path.abspath(args.samplePath) + img_folder, img_filename))
         else:
             default_img = 'User_16b5545b4f1b42379c14815d73209225.png'
             content = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + default_img + '"', content)
 
         # Write the altered content back to the new .artipreset file
-        with open(os.path.abspath(args.samplePath) + arti_folder + '/' + sample_set_name + '.artipreset', 'w') as f:
+        arti_file = arti_folder + '/' + sample_set_name + '.artipreset'
+        with open(os.path.abspath(args.samplePath) + arti_file, 'w') as f:
             f.write(content)
 
         # Create a 'SamplePools' folder and appropriate subfolders
@@ -103,8 +110,59 @@ def main(args):
 
         # Copy the .wav files (with their uuids appended) into the new folder
         for ss in sorted_sample_sets:
-            copyfile(os.path.join(os.path.abspath(args.samplePath), ss.filename[:-37] + '.wav'),
+            copy(os.path.join(os.path.abspath(args.samplePath), ss.filename[:-37] + '.wav'),
                      os.path.join(os.path.abspath(args.samplePath) + wav_folder, ss.filename))
+
+        # Deploy the Preset files & folder structure if this flag is set
+        if args.d:
+            src = os.path.abspath(args.samplePath) + '/Common/'
+            dst = str(pathlib.Path.home()) + '/Documents/Artiphon/Common/'
+            print('Adding files to:', dst)
+            copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+
+            orba_home, err = connect_to_orba()
+            if err:
+                print(err)
+
+            # Deploy onto the Orba if found
+            if orba_home:
+                print('Adding files to Orba')
+                src = os.path.abspath(args.samplePath) + '/Common/Presets/'
+                dst = orba_home + 'Presets/'
+                copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+                src = os.path.abspath(args.samplePath) + '/Common/SamplePools/'
+                dst = orba_home + 'SamplePools/'
+                copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+
+        # Remove the Preset if this flag is set
+        if args.r:
+            # Remove the Preset from the Artiphon User Preset location
+            dst = str(pathlib.Path.home()) + '/Documents/Artiphon'
+            print('Removing files from:', dst)
+            if os.path.isfile(dst + img_file):
+                os.remove(dst + img_file)
+            if os.path.isfile(dst + arti_file):
+                os.remove(dst + arti_file)
+            if os.path.exists(dst + wav_folder):
+                rmtree(dst + wav_folder, ignore_errors=True)
+
+            # Remove the Preset from the Orba
+            if not orba_home:
+                orba_home, err = connect_to_orba()
+                if err:
+                    print(err)
+
+            if orba_home:
+                print('Removing files to Orba')
+                if os.path.isfile(orba_home + arti_file[8:]):
+                    os.remove(orba_home + arti_file[8:])
+                if os.path.isfile(orba_home + arti_file[8:-11] + '.crc'):
+                    os.remove(orba_home + arti_file[8:-11] + '.crc')
+                if os.path.exists(orba_home + wav_folder[8:]):
+                    rmtree(orba_home + wav_folder[8:], ignore_errors=True)
+
+            # Need to investigate a better way of monitoring end of file I/O
+            disconnect_orba()
 
     return
 
@@ -118,15 +176,17 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
 
     # Positional mandatory arguments
-    parser.add_argument('samplePath', help='Path to the samples folder.', type=str)
+    parser.add_argument('samplePath', help='path to the samples folder.', type=str)
 
     # Optional arguments
-    # parser.add_argument('-u', help='Updates/Adds a UUID to the .wav files and output', action='store_true')
+    parser.add_argument('-d', help='deploy the content to the Artiphon folder and Orba.', action='store_true')
+    parser.add_argument('-r', help='remove the content to the Artiphon folder and Orba.', action='store_true')
+    parser.add_argument('-s', help='suppress SampleSet node output to screen.', action='store_true')
     parser.add_argument('-a', '--artipreset', nargs='?', const='arg_was_not_given',
-                        help='Path to an .artipreset file to use as starting template')
+                        help='path to an .artipreset file to use as starting template')
 
     # Print version
-    parser.add_argument('--version', action='version', version='%(prog)s - Version 0.92')
+    parser.add_argument('--version', action='version', version='%(prog)s - Version 0.97')
 
     # Parse arguments
     args = parser.parse_args()

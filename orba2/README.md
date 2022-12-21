@@ -73,7 +73,11 @@ Filename format for .wav files is as follows (< > denotes optional):
 >**PRO TIP**: Sample #s can be obtained from audio editing software such as [Audacity](https://www.audacityteam.org).
 
 ### FUTURE PLANS:
-1. Add an example folder.
+1. Bug Fixing
+2. Adding more useful option flags
+
+### EXAMPLE
+[Clarinet.zip](https://github.com/subskybox/Orba/files/10275169/Clarinet.zip)
 
 ### DEMO:
 

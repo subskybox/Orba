@@ -6,9 +6,8 @@ import glob
 import hashlib
 import pathlib
 import argparse
-from shutil import copy
-from shutil import rmtree
-from shutil import copytree
+import time
+from shutil import copy, rmtree, copytree
 from itertools import groupby
 from operator import attrgetter
 from collections import OrderedDict
@@ -127,12 +126,16 @@ def main(args):
             # Deploy onto the Orba if found
             if orba_home:
                 print('Adding files to Orba')
+                time.sleep(2) # Appears to be a waiting period until file system is fully accesible.
                 src = os.path.abspath(args.samplePath) + '/Common/Presets/'
                 dst = orba_home + 'Presets/'
                 copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
                 src = os.path.abspath(args.samplePath) + '/Common/SamplePools/'
                 dst = orba_home + 'SamplePools/'
                 copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+
+            # Need to investigate a better way of monitoring end of file I/O
+            disconnect_orba()
 
         # Remove the Preset if this flag is set
         if args.r:
@@ -147,13 +150,12 @@ def main(args):
                 rmtree(dst + wav_folder, ignore_errors=True)
 
             # Remove the Preset from the Orba
-            if not orba_home:
-                orba_home, err = connect_to_orba()
-                if err:
-                    print(err)
+            orba_home, err = connect_to_orba()
+            if err:
+                print(err)
 
             if orba_home:
-                print('Removing files to Orba')
+                print('Removing files from Orba')
                 if os.path.isfile(orba_home + arti_file[8:]):
                     os.remove(orba_home + arti_file[8:])
                 if os.path.isfile(orba_home + arti_file[8:-11] + '.crc'):
@@ -179,14 +181,15 @@ def parse_arguments():
     parser.add_argument('samplePath', help='path to the samples folder.', type=str)
 
     # Optional arguments
-    parser.add_argument('-d', help='deploy the content to the Artiphon folder and Orba.', action='store_true')
-    parser.add_argument('-r', help='remove the content to the Artiphon folder and Orba.', action='store_true')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-d', help='deploy the content to the Artiphon folder and Orba.', action='store_true')
+    group.add_argument('-r', help='remove the content to the Artiphon folder and Orba.', action='store_true')
     parser.add_argument('-s', help='suppress SampleSet node output to screen.', action='store_true')
     parser.add_argument('-a', '--artipreset', nargs='?', const='arg_was_not_given',
                         help='path to an .artipreset file to use as starting template')
 
     # Print version
-    parser.add_argument('--version', action='version', version='%(prog)s - Version 0.97')
+    parser.add_argument('--version', action='version', version='%(prog)s - Version 0.98')
 
     # Parse arguments
     args = parser.parse_args()

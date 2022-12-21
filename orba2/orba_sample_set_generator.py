@@ -7,7 +7,7 @@ import hashlib
 import pathlib
 import argparse
 import time
-from shutil import copy, rmtree, copytree
+from shutil import copy, rmtree, copytree, make_archive
 from itertools import groupby
 from operator import attrgetter
 from collections import OrderedDict
@@ -78,7 +78,6 @@ def main(args):
         content = re.sub('(factory=".*?")', 'factory="0"', content)
         content = re.sub('(uuid=".*?")', 'uuid="' + artipreset_uuid + '"', content)
         content = re.sub('(    <SampleSet.*</SampleSet>)', sample_set_node, content, flags=re.DOTALL)
-        sample_set_name += '_' + artipreset_uuid
 
         # Check if a png file is present
         png_files = glob.glob(os.path.abspath(args.samplePath) + '/*.png')
@@ -99,7 +98,7 @@ def main(args):
             content = re.sub('(coverImageRef=".*?")', 'coverImageRef="' + default_img + '"', content)
 
         # Write the altered content back to the new .artipreset file
-        arti_file = arti_folder + '/' + sample_set_name + '.artipreset'
+        arti_file = arti_folder + '/' + sample_set_name + '_' + artipreset_uuid + '.artipreset'
         with open(os.path.abspath(args.samplePath) + arti_file, 'w') as f:
             f.write(content)
 
@@ -111,6 +110,9 @@ def main(args):
         for ss in sorted_sample_sets:
             copy(os.path.join(os.path.abspath(args.samplePath), ss.filename[:-37] + '.wav'),
                      os.path.join(os.path.abspath(args.samplePath) + wav_folder, ss.filename))
+
+        if args.z:
+            make_archive(os.path.abspath(args.samplePath), 'zip', os.path.abspath(args.samplePath) + '/Common')
 
         # Deploy the Preset files & folder structure if this flag is set
         if args.d:
@@ -185,6 +187,7 @@ def parse_arguments():
     group.add_argument('-d', help='deploy the content to the Artiphon folder and Orba.', action='store_true')
     group.add_argument('-r', help='remove the content to the Artiphon folder and Orba.', action='store_true')
     parser.add_argument('-s', help='suppress SampleSet node output to screen.', action='store_true')
+    parser.add_argument('-z', help='zip the contents of the Common folder.', action='store_true')
     parser.add_argument('-a', '--artipreset', nargs='?', const='arg_was_not_given',
                         help='path to an .artipreset file to use as starting template')
 

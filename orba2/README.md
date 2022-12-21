@@ -26,16 +26,17 @@ Then run the script with the following command:
 
 **PC or Mac:**
 ```
-python orba_sample_set_generator.py [-h] [-d] [-r] [-s] [-a [ARTIPRESET]] [--version] samplePath
+python orba_sample_set_generator.py [-h] [-d | -r] [-s] [-z] [-a [ARTIPRESET]] [--version] samplePath
 
 positional arguments:
-  samplePath            Path to the samples folder.
+  samplePath            path to the samples folder.
 
 options:
   -h, --help            show this help message and exit
   -d                    deploy the content to the Artiphon folder and Orba.
   -r                    remove the content to the Artiphon folder and Orba.
   -s                    suppress SampleSet node output to screen.
+  -z                    zip the contents of the Common folder.
   -a [ARTIPRESET], --artipreset [ARTIPRESET]
                         path to an .artipreset file to use as starting template
   --version             show program's version number and exit
@@ -72,9 +73,7 @@ Filename format for .wav files is as follows (< > denotes optional):
 >**PRO TIP**: Sample #s can be obtained from audio editing software such as [Audacity](https://www.audacityteam.org).
 
 ### FUTURE PLANS:
-1. Improve deploy/remove functions to work with *Windows*. Currently only supports MacOS.
-2. Add a flag to zip the `Common` folder contents enabling the sharing of Presets with other Artiphon enthusiasts.
-3. Add an example folder.
+1. Add an example folder.
 
 ### DEMO:
 

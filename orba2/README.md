@@ -81,5 +81,8 @@ Filename format for .wav files is as follows (< > denotes optional):
 Download a copy of my latest custom Preset to try out this script:
 [Preset.zip](https://github.com/subskybox/Orba/files/10289501/Preset.zip)
 
-### DEMO:
+### DEMOS:
+#### Basic:
 https://user-images.githubusercontent.com/3968129/205837341-8818b2da-2b9b-4599-a261-ddabd6a2a5f6.mov
+#### Deploy:
+https://user-images.githubusercontent.com/3968129/209211548-47670b9b-e61f-4c52-8217-f3f628344d20.mov

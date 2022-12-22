@@ -17,6 +17,7 @@ from classes.orba_utils import connect_to_orba, disconnect_orba
 
 def main(args):
     # Build relevant collections and base names
+    os.system("")
     files = [os.path.basename(x) for x in glob.glob(os.path.abspath(args.samplePath) + '/*.wav')]
     sorted_sample_sets = sorted([(SampleSet(f)) for f in files], key=lambda x: (x.midi_note, x.velocity))
     subdirectory = os.path.basename(os.path.abspath(args.samplePath))

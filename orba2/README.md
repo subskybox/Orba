@@ -26,26 +26,27 @@ Then run the script with the following command:
 
 **PC or Mac:**
 ```
-python orba_sample_set_generator.py [-h] [-d | -r] [-s] [-z] [-a [ARTIPRESET]] [--version] samplePath
+python orba_sample_set_generator.py [-h] [-d | -r] [-b] [-s] [-z] [--version] samplePath
 
 positional arguments:
-  samplePath            path to the samples folder.
+  samplePath  path to the samples folder.
 
 options:
-  -h, --help            show this help message and exit
-  -d                    deploy the content to the Artiphon folder and Orba.
-  -r                    remove the content to the Artiphon folder and Orba.
-  -s                    suppress SampleSet node output to screen.
-  -z                    zip the contents of the Common folder.
-  -a [ARTIPRESET], --artipreset [ARTIPRESET]
-                        path to an .artipreset file to use as starting template
-  --version             show program's version number and exit
+  -h, --help  show this help message and exit
+  -d          deploy the content to the Artiphon folder and Orba.
+  -r          remove the content to the Artiphon folder and Orba.
+  -b          build the Preset folder structure and files.
+  -s          suppress SampleSet node output to screen.
+  -z          zip the contents of the Common folder.
+  --version   show program's version number and exit
 ```
-This will output the ```<SampleSet>``` node which can be replaced into an *.artipreset* file. The best approach is to add the `-a` flag and supply the path to an existing *.artipreset* file. This will create a `Common` folder in the *samplePath* with all the files & folders required to add the new Preset to the Orba 2 App. Once you are happy with the results, you can add the `-d` flag to deploy it.
+This will output the ```<SampleSet>``` node which can be replaced into an *.artipreset* file. The best approach is to add the `-b` flag and include a *.artipreset* file in the samplePath as a template. This will create a `Common` folder in the *samplePath* with all the files & folders required to add the new Preset to the Orba 2 App. Once you are happy with the results, you can add the `-d` flag to deploy it.
 
 >**PRO TIP**: You can *Drag & Drop* your folder from the *File Explorer* or *Finder* directly to the Terminal window rather than typing *samplePath*.
 
->**PRO TIP**: If a .png image file is found in the *samplePath*, it will be added to the `Common` folder when using `-a`
+>**PRO TIP**: If a *.png* image file is found in the *samplePath*, it will be added to the `Common` folder when using `-b`
+
+>**PRO TIP**: Make a copy of a *.artipreset* from the factory Presets and place it in the *samplePath*, it will be used as the starting template when using `-b`
 
 The factory *.artipreset* files can be found here:
 
@@ -76,9 +77,9 @@ Filename format for .wav files is as follows (< > denotes optional):
 1. Bug Fixing
 2. Adding more useful option flags
 
-### EXAMPLE
+### EXAMPLE:
+Download a copy of my latest custom Preset to try out this script:
 [Clarinet.zip](https://github.com/subskybox/Orba/files/10275169/Clarinet.zip)
 
 ### DEMO:
-
 https://user-images.githubusercontent.com/3968129/205837341-8818b2da-2b9b-4599-a261-ddabd6a2a5f6.mov

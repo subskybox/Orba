@@ -16,7 +16,7 @@ def disconnect_orba():
 
     # Disconnect from Orba
     if serial_port:
-        send_MSC(serial_port)
+        send_msc(serial_port)
 
 
 def find_orba_drive():
@@ -65,7 +65,7 @@ def find_serial_port():
         )
 
         if proc.returncode != 0 or not proc.stdout.strip():
-            print('>> Failed to find Serial Port')
+            # Failed to find Serial Port
             return None
         else:
             return proc.stdout
@@ -76,23 +76,23 @@ def find_serial_port():
         if len(serial_ports):
             return serial_ports[0]
         else:
-            print('>> Failed to find Serial Port')
+            # Failed to find Serial Port
             return None
 
 
-def send_MSC(serial_port):
+def send_msc(serial_port):
     if platform.uname().system == 'Windows':
         cmd = 'set /p x="M" <nul >\\\\.\\' + serial_port
     else:
         cmd = 'echo M > ' + serial_port
-    proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
 
 
 def connect_to_orba():
     serial_port = find_serial_port()
     if serial_port:
         # Attempt to connect to Orba
-        send_MSC(serial_port)
+        send_msc(serial_port)
         orba_home, err = find_orba_drive()
 
         if err:
@@ -100,4 +100,3 @@ def connect_to_orba():
         else:
             return orba_home, err
     return None, '>> Orba NOT accessible. Try turning it off and then back on.'
-

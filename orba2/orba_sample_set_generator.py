@@ -130,7 +130,8 @@ def main(args):
 
         if args.z:
             print('{}Zip{}: Archive created.'.format('\033[94m', '\033[0m'))
-            make_archive(os.path.abspath(args.samplePath), 'zip', os.path.abspath(args.samplePath) + '/Common')
+            make_archive(os.path.abspath(args.samplePath) + '/' + sample_set_name, 'zip',
+                         os.path.abspath(args.samplePath), 'Common')
 
         # Deploy the Preset files & folder structure if this flag is set
         if args.d:

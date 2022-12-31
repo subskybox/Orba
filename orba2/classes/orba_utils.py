@@ -142,12 +142,12 @@ def deploy_preset(path_to_payload):
         dst = orba_home + 'SamplePools/'
         copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
 
+        # Need to investigate a better way of monitoring end of file I/O
+        disconnect_orba()
+        print('{}Deploy{}: Complete'.format('\033[94m', '\033[0m'))
+
     if tmp_path is not None and os.path.exists(tmp_path):
         rmtree(tmp_path)
-
-    # Need to investigate a better way of monitoring end of file I/O
-    disconnect_orba()
-    print('{}Deploy{}: Complete'.format('\033[94m', '\033[0m'))
 
 
 def remove_preset_structure(path_to_payload):
@@ -218,9 +218,9 @@ def remove_preset_structure(path_to_payload):
                 # print(idx, target)
                 rmtree(target, ignore_errors=True)
 
-    # Need to investigate a better way of monitoring end of file I/O
-    disconnect_orba()
-    print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))
+        # Need to investigate a better way of monitoring end of file I/O
+        disconnect_orba()
+        print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))
 
 
 def remove_preset(img_file, arti_file, wav_folder):
@@ -248,6 +248,6 @@ def remove_preset(img_file, arti_file, wav_folder):
         if os.path.exists(orba_home + wav_folder[8:]):
             rmtree(orba_home + wav_folder[8:], ignore_errors=True)
 
-    # Need to investigate a better way of monitoring end of file I/O
-    disconnect_orba()
-    print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))
+        # Need to investigate a better way of monitoring end of file I/O
+        disconnect_orba()
+        print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))

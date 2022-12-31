@@ -9,7 +9,7 @@ import platform
 import tempfile
 import subprocess
 from string import ascii_uppercase
-from shutil import copy, rmtree, copytree, unpack_archive
+from shutil import rmtree, copytree, copyfile, unpack_archive, ignore_patterns
 
 
 def disconnect_orba():
@@ -31,9 +31,9 @@ def find_orba_drive():
     orba_drive = ''
     if platform.uname().system == 'Windows':
         # Windows
-        print('>> Attempting to connect to Orba', end='')
+        print('>> Attempting to connect to Orba', end='', flush=True)
         while not len(glob.glob(orba_drive + ':/Presets')) and (time.time() < timeout_start + 5):
-            print('.', end='')
+            print('.', end='', flush=True)
             time.sleep(1)
             for orba_drive in ascii_uppercase:
                 if len(glob.glob(orba_drive + ':/Presets')):
@@ -41,9 +41,9 @@ def find_orba_drive():
                     return orba_drive + ':/', None
     else:
         # MacOS
-        print('>> Attempting to connect to Orba', end='')
+        print('>> Attempting to connect to Orba', end='', flush=True)
         while not len(glob.glob('/Volumes/NO NAME/')) and (time.time() < timeout_start + 5):
-            print('.', end='')
+            print('.', end='', flush=True)
             time.sleep(1)
         print()
 
@@ -110,22 +110,24 @@ def connect_to_orba():
 
 
 def deploy_preset(path_to_payload):
+    os.system("")
     tmp_path = None
+
     if os.path.isfile(path_to_payload) and path_to_payload.endswith('.zip'):
-        print('Unzipping Preset')
         tmp_path = tempfile.mkdtemp()
         tmp_dir = pathlib.Path(tmp_path)
         unpack_archive(path_to_payload, tmp_path, 'zip')
         path_to_payload = tmp_dir / 'Common'
+        print('{}Unzipping{}: Adding files to'.format('\033[94m', '\033[0m'), tmp_dir)
     elif not os.path.exists(path_to_payload) or os.path.basename(os.path.abspath(path_to_payload)) != 'Common':
         print('The specified folder does not seem to contain the preset payload.')
         return None  # What to return?
 
-    print(path_to_payload)
+    # print(path_to_payload)
     src = path_to_payload
     dst = str(pathlib.Path.home()) + '/Documents/Artiphon/Common/'
     print('{}Deploy{}: Adding files to'.format('\033[94m', '\033[0m'), dst)
-    copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+    copytree(src, dst, ignore=ignore_patterns('.DS_Store'), copy_function=copyfile, dirs_exist_ok=True)
 
     print('{}Deploy{}: Adding files to Orba'.format('\033[94m', '\033[0m'))
     orba_home, err = connect_to_orba()
@@ -137,10 +139,11 @@ def deploy_preset(path_to_payload):
         time.sleep(2)  # Appears to be a waiting period until file system is fully accessible.
         src = os.path.abspath(path_to_payload) + '/Presets/'
         dst = orba_home + 'Presets/'
-        copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+        copytree(src, dst, ignore=ignore_patterns('.DS_Store'), copy_function=copyfile, dirs_exist_ok=True)
         src = os.path.abspath(path_to_payload) + '/SamplePools/'
         dst = orba_home + 'SamplePools/'
-        copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
+        copytree(src, dst, ignore=ignore_patterns('.DS_Store'), copy_function=copyfile, dirs_exist_ok=True)
+        print('>> Copying files to Orba.')
 
         # Need to investigate a better way of monitoring end of file I/O
         disconnect_orba()
@@ -151,22 +154,23 @@ def deploy_preset(path_to_payload):
 
 
 def remove_preset_structure(path_to_payload):
+    os.system("")
     tmp_path = None
     if os.path.isfile(path_to_payload) and path_to_payload.endswith('.zip'):
-        print('Unzipping Preset')
         tmp_path = tempfile.mkdtemp()
         tmp_dir = pathlib.Path(tmp_path)
         unpack_archive(path_to_payload, tmp_path, 'zip')
         path_to_payload = tmp_dir / 'Common'
+        print('{}Unzipping{}: Adding files to'.format('\033[94m', '\033[0m'), tmp_dir)
     elif not os.path.exists(path_to_payload) or os.path.basename(os.path.abspath(path_to_payload)) != 'Common':
         print('The specified folder does not seem to contain the preset payload.')
         return None  # What to return?
 
     # Remove the Preset from the Artiphon User Preset location
-    dst = str(pathlib.Path.home()) + '/Documents/Artiphon'
+    dst = str(pathlib.Path.home() / 'Documents' / 'Artiphon')
     print('{}Remove{}: Removing files from'.format('\033[94m', '\033[0m'), dst)
 
-    img_files = [re.search('/Common/.*.png$', x) for x in
+    img_files = [re.search(r'(/|\\)Common.*.png$', x) for x in
                  glob.glob(os.path.abspath(path_to_payload) + '/**/*.png', recursive=True)]
 
     for idx, img in enumerate(img_files):
@@ -174,7 +178,7 @@ def remove_preset_structure(path_to_payload):
             # print(idx, dst + img[0])
             os.remove(dst + img[0])
 
-    arti_files = [re.search('/Common/.*.artipreset$', x) for x in
+    arti_files = [re.search(r'(/|\\)Common.*.artipreset$', x) for x in
                   glob.glob(os.path.abspath(path_to_payload) + '/**/*.artipreset', recursive=True)]
 
     # Remove the Preset from the Artiphon User Preset location
@@ -183,8 +187,8 @@ def remove_preset_structure(path_to_payload):
             # print(idx, dst + arti_file[0])
             os.remove(dst + arti_file[0])
 
-    print(tmp_dir)
-    print(os.path.abspath(tmp_dir / 'SamplePools' / 'User'))
+    # print(tmp_dir)
+    # print(os.path.abspath(tmp_dir / 'SamplePools' / 'User'))
 
     wav_folders = [os.path.basename(x) for x in
                    glob.glob(os.path.abspath(tmp_dir / 'Common/SamplePools/User') + '*/*', recursive=True)]
@@ -218,12 +222,15 @@ def remove_preset_structure(path_to_payload):
                 # print(idx, target)
                 rmtree(target, ignore_errors=True)
 
+        print('>> Removing files and folders from Orba.')
+
         # Need to investigate a better way of monitoring end of file I/O
         disconnect_orba()
         print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))
 
 
 def remove_preset(img_file, arti_file, wav_folder):
+    os.system("")
     # Remove the Preset from the Artiphon User Preset location
     dst = str(pathlib.Path.home()) + '/Documents/Artiphon'
     print('{}Remove{}: Removing files from'.format('\033[94m', '\033[0m'), dst)

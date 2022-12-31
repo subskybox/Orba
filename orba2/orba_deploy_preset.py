@@ -21,7 +21,7 @@ def parse_arguments():
                                             'folder or reference a .zip file containing the same structure', type=str)
 
     # Optional arguments
-    parser.add_argument('-r', help='remove the content to the Artiphon folder and Orba.', action='store_true')
+    parser.add_argument('-r', help='remove the content from the Artiphon folder and Orba.', action='store_true')
 
     # Print version
     parser.add_argument('--version', action='version', version='%(prog)s - Version 0.8')

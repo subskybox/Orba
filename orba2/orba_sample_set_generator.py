@@ -143,59 +143,10 @@ def main(args):
         # Deploy the Preset files & folder structure if this flag is set
         if args.d:
             deploy_preset(os.path.abspath(args.samplePath) + '/Common/')
-            # src = os.path.abspath(args.samplePath) + '/Common/'
-            # dst = str(pathlib.Path.home()) + '/Documents/Artiphon/Common/'
-            # print('{}Deploy{}: Adding files to'.format('\033[94m', '\033[0m'), dst)
-            # copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
-            #
-            # print('{}Deploy{}: Adding files to Orba'.format('\033[94m', '\033[0m'))
-            # orba_home, err = connect_to_orba()
-            # if err:
-            #     print(err)
-            #
-            # # Deploy onto the Orba if found
-            # if orba_home:
-            #     time.sleep(2)  # Appears to be a waiting period until file system is fully accessible.
-            #     src = os.path.abspath(args.samplePath) + '/Common/Presets/'
-            #     dst = orba_home + 'Presets/'
-            #     copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
-            #     src = os.path.abspath(args.samplePath) + '/Common/SamplePools/'
-            #     dst = orba_home + 'SamplePools/'
-            #     copytree(src, dst, ignore=None, copy_function=copy, dirs_exist_ok=True)
-            #
-            # # Need to investigate a better way of monitoring end of file I/O
-            # disconnect_orba()
 
         # Remove the Preset if this flag is set
         if args.r:
             remove_preset(img_file, arti_file, wav_folder)
-
-            # # Remove the Preset from the Artiphon User Preset location
-            # dst = str(pathlib.Path.home()) + '/Documents/Artiphon'
-            # print('{}Remove{}: Removing files from'.format('\033[94m', '\033[0m'), dst)
-            # if os.path.isfile(dst + img_file):
-            #     os.remove(dst + img_file)
-            # if os.path.isfile(dst + arti_file):
-            #     os.remove(dst + arti_file)
-            # if os.path.exists(dst + wav_folder):
-            #     rmtree(dst + wav_folder, ignore_errors=True)
-
-            # # Remove the Preset from the Orba
-            # print('{}Remove{}: Removing files from Orba'.format('\033[94m', '\033[0m'))
-            # orba_home, err = connect_to_orba()
-            # if err:
-            #     print(err)
-            #
-            # if orba_home:
-            #     if os.path.isfile(orba_home + arti_file[8:]):
-            #         os.remove(orba_home + arti_file[8:])
-            #     if os.path.isfile(orba_home + arti_file[8:-11] + '.crc'):
-            #         os.remove(orba_home + arti_file[8:-11] + '.crc')
-            #     if os.path.exists(orba_home + wav_folder[8:]):
-            #         rmtree(orba_home + wav_folder[8:], ignore_errors=True)
-            #
-            # # Need to investigate a better way of monitoring end of file I/O
-            # disconnect_orba()
 
     return
 
@@ -216,7 +167,7 @@ def parse_arguments():
     # Optional arguments
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-d', help='deploy the content to the Artiphon folder and Orba.', action='store_true')
-    group.add_argument('-r', help='remove the content to the Artiphon folder and Orba.', action='store_true')
+    group.add_argument('-r', help='remove the content from the Artiphon folder and Orba.', action='store_true')
     parser.add_argument('-b', help='build the Preset folder structure and files.', action='store_true')
     parser.add_argument('-s', help='suppress SampleSet node output to screen.', action='store_true')
     parser.add_argument('-z', help='zip the contents of the Common folder.', action='store_true')

@@ -114,8 +114,9 @@ def deploy_preset(path_to_payload):
     if os.path.isfile(path_to_payload) and path_to_payload.endswith('.zip'):
         print('Unzipping Preset')
         tmp_path = tempfile.mkdtemp()
+        tmp_dir = pathlib.Path(tmp_path)
         unpack_archive(path_to_payload, tmp_path, 'zip')
-        path_to_payload = tmp_path + '/Common'
+        path_to_payload = tmp_dir / 'Common'
     elif not os.path.exists(path_to_payload) or os.path.basename(os.path.abspath(path_to_payload)) != 'Common':
         print('The specified folder does not seem to contain the preset payload.')
         return None  # What to return?
@@ -154,8 +155,9 @@ def remove_preset_structure(path_to_payload):
     if os.path.isfile(path_to_payload) and path_to_payload.endswith('.zip'):
         print('Unzipping Preset')
         tmp_path = tempfile.mkdtemp()
+        tmp_dir = pathlib.Path(tmp_path)
         unpack_archive(path_to_payload, tmp_path, 'zip')
-        path_to_payload = tmp_path + '/Common'
+        path_to_payload = tmp_dir / 'Common'
     elif not os.path.exists(path_to_payload) or os.path.basename(os.path.abspath(path_to_payload)) != 'Common':
         print('The specified folder does not seem to contain the preset payload.')
         return None  # What to return?
@@ -181,8 +183,11 @@ def remove_preset_structure(path_to_payload):
             # print(idx, dst + arti_file[0])
             os.remove(dst + arti_file[0])
 
+    print(tmp_dir)
+    print(os.path.abspath(tmp_dir / 'SamplePools' / 'User'))
+
     wav_folders = [os.path.basename(x) for x in
-                   glob.glob(os.path.abspath(path_to_payload + '/SamplePools/User') + '*/*', recursive=True)]
+                   glob.glob(os.path.abspath(tmp_dir / 'Common/SamplePools/User') + '*/*', recursive=True)]
 
     # Remove the wav folders from the Artiphon User Preset location
     for idx, wav_folder in enumerate(wav_folders):

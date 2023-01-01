@@ -156,6 +156,7 @@ def deploy_preset(path_to_payload):
 def remove_preset_structure(path_to_payload):
     os.system("")
     tmp_path = None
+    tmp_dir = pathlib.Path(path_to_payload)
     if os.path.isfile(path_to_payload) and path_to_payload.endswith('.zip'):
         tmp_path = tempfile.mkdtemp()
         tmp_dir = pathlib.Path(tmp_path)
@@ -170,7 +171,7 @@ def remove_preset_structure(path_to_payload):
     dst = str(pathlib.Path.home() / 'Documents' / 'Artiphon')
     print('{}Remove{}: Removing files from'.format('\033[94m', '\033[0m'), dst)
 
-    img_files = [re.search(r'(/|\\)Common.*.png$', x) for x in
+    img_files = [re.search(r'([/\\])Common.*.png$', x) for x in
                  glob.glob(os.path.abspath(path_to_payload) + '/**/*.png', recursive=True)]
 
     for idx, img in enumerate(img_files):
@@ -178,7 +179,7 @@ def remove_preset_structure(path_to_payload):
             # print(idx, dst + img[0])
             os.remove(dst + img[0])
 
-    arti_files = [re.search(r'(/|\\)Common.*.artipreset$', x) for x in
+    arti_files = [re.search(r'([/\\])Common.*.artipreset$', x) for x in
                   glob.glob(os.path.abspath(path_to_payload) + '/**/*.artipreset', recursive=True)]
 
     # Remove the Preset from the Artiphon User Preset location

@@ -14,6 +14,7 @@ from shutil import rmtree, copytree, copyfile, unpack_archive, ignore_patterns
 
 def disconnect_orba():
     # Wait for file I/O to complete
+    # Need to investigate a better way of monitoring end of file I/O
     time.sleep(3)
 
     # Re-Query for the Serial Port as it can change
@@ -121,9 +122,8 @@ def deploy_preset(path_to_payload):
         print('{}Unzipping{}: Adding files to'.format('\033[94m', '\033[0m'), tmp_dir)
     elif not os.path.exists(path_to_payload) or os.path.basename(os.path.abspath(path_to_payload)) != 'Common':
         print('The specified folder does not seem to contain the preset payload.')
-        return None  # What to return?
+        return
 
-    # print(path_to_payload)
     src = path_to_payload
     dst = str(pathlib.Path.home()) + '/Documents/Artiphon/Common/'
     print('{}Deploy{}: Adding files to'.format('\033[94m', '\033[0m'), dst)
@@ -145,7 +145,6 @@ def deploy_preset(path_to_payload):
         copytree(src, dst, ignore=ignore_patterns('.DS_Store'), copy_function=copyfile, dirs_exist_ok=True)
         print('>> Copying files to Orba.')
 
-        # Need to investigate a better way of monitoring end of file I/O
         disconnect_orba()
         print('{}Deploy{}: Complete'.format('\033[94m', '\033[0m'))
 
@@ -155,8 +154,8 @@ def deploy_preset(path_to_payload):
 
 def remove_preset_structure(path_to_payload):
     os.system("")
-    tmp_path = None
     tmp_dir = pathlib.Path(path_to_payload)
+
     if os.path.isfile(path_to_payload) and path_to_payload.endswith('.zip'):
         tmp_path = tempfile.mkdtemp()
         tmp_dir = pathlib.Path(tmp_path)
@@ -176,7 +175,6 @@ def remove_preset_structure(path_to_payload):
 
     for idx, img in enumerate(img_files):
         if os.path.isfile(dst + img[0]):
-            # print(idx, dst + img[0])
             os.remove(dst + img[0])
 
     arti_files = [re.search(r'([/\\])Common.*.artipreset$', x) for x in
@@ -185,11 +183,7 @@ def remove_preset_structure(path_to_payload):
     # Remove the Preset from the Artiphon User Preset location
     for idx, arti_file in enumerate(arti_files):
         if os.path.isfile(dst + arti_file[0]):
-            # print(idx, dst + arti_file[0])
             os.remove(dst + arti_file[0])
-
-    # print(tmp_dir)
-    # print(os.path.abspath(tmp_dir / 'SamplePools' / 'User'))
 
     wav_folders = [os.path.basename(x) for x in
                    glob.glob(os.path.abspath(tmp_dir / 'Common/SamplePools/User') + '*/*', recursive=True)]
@@ -198,7 +192,6 @@ def remove_preset_structure(path_to_payload):
     for idx, wav_folder in enumerate(wav_folders):
         target = dst + '/Common/SamplePools/User/' + wav_folder
         if os.path.exists(target):
-            # print(idx, target)
             rmtree(target, ignore_errors=True)
 
     # Remove the Preset from the Orba
@@ -210,28 +203,25 @@ def remove_preset_structure(path_to_payload):
     if orba_home:
         for idx, arti_file in enumerate(arti_files):
             if os.path.isfile(orba_home + arti_file[0][8:]):
-                # print(orba_home + arti_file[0][8:])
                 os.remove(orba_home + arti_file[0][8:])
             if os.path.isfile(orba_home + arti_file[0][8:-11] + '.crc'):
-                # print(orba_home + arti_file[0][8:-11] + '.crc')
                 os.remove(orba_home + arti_file[0][8:-11] + '.crc')
 
         # Remove the wav folders from the Orba
         for idx, wav_folder in enumerate(wav_folders):
             target = orba_home + 'SamplePools/User/' + wav_folder
             if os.path.exists(target):
-                # print(idx, target)
                 rmtree(target, ignore_errors=True)
 
         print('>> Removing files and folders from Orba.')
 
-        # Need to investigate a better way of monitoring end of file I/O
         disconnect_orba()
         print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))
 
 
 def remove_preset(img_file, arti_file, wav_folder):
     os.system("")
+
     # Remove the Preset from the Artiphon User Preset location
     dst = str(pathlib.Path.home()) + '/Documents/Artiphon'
     print('{}Remove{}: Removing files from'.format('\033[94m', '\033[0m'), dst)
@@ -256,6 +246,5 @@ def remove_preset(img_file, arti_file, wav_folder):
         if os.path.exists(orba_home + wav_folder[8:]):
             rmtree(orba_home + wav_folder[8:], ignore_errors=True)
 
-        # Need to investigate a better way of monitoring end of file I/O
         disconnect_orba()
         print('{}Remove{}: Complete'.format('\033[94m', '\033[0m'))

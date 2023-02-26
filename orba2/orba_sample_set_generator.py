@@ -3,16 +3,19 @@
 import os
 import re
 import glob
+import wave
 import hashlib
-import pathlib
 import argparse
-import time
-from shutil import copy, rmtree, copytree, make_archive
+from shutil import copy, rmtree, make_archive
 from itertools import groupby
 from operator import attrgetter
 from collections import OrderedDict
 from classes.artipreset import SampleSet
 from classes.orba_utils import deploy_preset, remove_preset
+
+# Colors
+NONE = '\033[0m'
+BLUE = '\033[94m'
 
 
 def main(args):
@@ -22,7 +25,6 @@ def main(args):
     subdirectory = os.path.basename(os.path.abspath(args.samplePath))
     sample_set_name = subdirectory
     os.system("")
-    # orba_home = None
 
     # Append a uuid to the sample directory if this flag is set
     if args.b:
@@ -61,7 +63,7 @@ def main(args):
 
     # Build the Preset files & folder structure if this flag is set
     if args.b:
-        print('{}Build{}: Evaluating assets.'.format('\033[94m', '\033[0m'))
+        print('{}Build{}: Evaluating assets.'.format(BLUE, NONE))
         # Remove any previous versions
         rmtree(os.path.abspath(args.samplePath) + '/Common', ignore_errors=True)
 
@@ -96,9 +98,12 @@ def main(args):
         # If this template is a Stem template, make a few more adjustments
         if re.search('(stemArtist)', content):
             print('>> Template is a Stem type')
+            sample_lengths = [wave.open(x, 'rb').getnframes() for x in
+                              glob.glob(os.path.abspath(args.samplePath) + '/*.wav')]
             tuning = ', '.join(list(OrderedDict.fromkeys([str(ss.midi_note) for ss in sorted_sample_sets])))
             content = re.sub('(tuning=".*?")', 'tuning="' + tuning + '"', content)
             content = re.subn('(pitch=".*?")', 'pitch="-1"', content)[0]
+            content = re.subn('(loopEnd=".*?")', 'loopEnd="' + str(min(sample_lengths)) + '"', content)[0]
 
         # Check if a png file is present
         png_files = glob.glob(os.path.abspath(args.samplePath) + '/*.png')
@@ -133,10 +138,10 @@ def main(args):
             copy(os.path.join(os.path.abspath(args.samplePath), ss.filename[:-37] + '.wav'),
                  os.path.join(os.path.abspath(args.samplePath) + wav_folder, ss.filename))
 
-        print('{}Build{}: Preset complete.'.format('\033[94m', '\033[0m'))
+        print('{}Build{}: Preset complete.'.format(BLUE, NONE))
 
         if args.z:
-            print('{}Zip{}: Archive created.'.format('\033[94m', '\033[0m'))
+            print('{}Zip{}: Archive created.'.format(BLUE, NONE))
             make_archive(os.path.abspath(args.samplePath) + '/' + sample_set_name, 'zip',
                          os.path.abspath(args.samplePath), 'Common')
 
@@ -171,20 +176,12 @@ def parse_arguments():
     parser.add_argument('-b', help='build the Preset folder structure and files.', action='store_true')
     parser.add_argument('-s', help='suppress SampleSet node output to screen.', action='store_true')
     parser.add_argument('-z', help='zip the contents of the Common folder.', action='store_true')
-    # parser.add_argument('-a', '--artipreset', nargs='?', const='arg_was_not_given',
-    #                     help='path to an .artipreset file to use as starting template')
 
     # Print version
     parser.add_argument('--version', action='version', version='%(prog)s - Version 0.98')
 
     # Parse arguments
     args = parser.parse_args()
-
-    # Raw print arguments
-    # print("You are running the script with arguments: ")
-    # for a in args.__dict__:
-    #     print(str(a) + ": " + str(args.__dict__[a]))
-
     return args
 
 
